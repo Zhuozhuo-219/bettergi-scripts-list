@@ -87,9 +87,14 @@ function sync() {
     console.log(`同步前分支备份：${backupRef}`);
     process.stdout.write(run('git', ['fetch', 'upstream', 'main']));
     try {
-        process.stdout.write(run('git', ['rebase', 'upstream/main']));
+        git('merge-base', '--is-ancestor', 'main', 'upstream/main');
+    } catch {
+        throw new Error('本地 main 含有与上游分叉的提交，已停止；请先检查 main，避免覆盖个人修改。');
+    }
+    try {
+        process.stdout.write(run('git', ['merge', '--no-edit', 'upstream/main']));
     } catch (error) {
-        throw new Error(`${error.message}\n遇到冲突已停止。请解决后 git rebase --continue，或 git rebase --abort；不会部署冲突代码。`);
+        throw new Error(`${error.message}\n遇到冲突已停止。请解决后 git add 并 git merge --continue，或 git merge --abort；不会部署冲突代码。`);
     }
     git('branch', '-f', 'main', 'upstream/main');
     verify();
@@ -97,8 +102,9 @@ function sync() {
 }
 
 // 独立于 CLI 的部署操作，测试使用临时安装目录验证保留记录和配置。
-function deployToRoot(bgiRoot, switchGroups = false, backupBase = path.resolve(repoRoot, '..', 'backups')) {
+function deployToRoot(bgiRoot, switchGroups = false, backupBase) {
     bgiRoot = path.resolve(bgiRoot);
+    backupBase ||= path.join(path.dirname(bgiRoot), 'BetterGI-Dev', 'backups');
     if (!fs.existsSync(path.join(bgiRoot, 'BetterGI.exe'))) throw new Error('目标目录缺少 BetterGI.exe。');
     const jsRoot = path.join(bgiRoot, 'User', 'JsScript');
     const target = safeJoin(jsRoot, folder);
