@@ -529,7 +529,8 @@
 
             // 读取地区
             // let path_sort_area = typeof(settings.path_sort_area) === 'undefined' || settings.path_sort_area === "" ? [] : settings.path_sort_area.split(' ');
-            let path_sort_area = settings.path_sort_area ? Array.from(settings.path_sort_area) : [] ;
+            const region_strategy = get_region_strategy();
+            let path_sort_area = region_strategy.mode === "地区优先" ? [] : region_strategy.areas;
             // 读取鱼类
             // let path_sort_fish = typeof(settings.path_sort_fish) === 'undefined' || settings.path_sort_fish === "" ? [] : settings.path_sort_fish.split(' ');
             let path_sort_fish = settings.path_sort_fish ? Array.from(settings.path_sort_fish) : [] ;
@@ -619,7 +620,7 @@
                         log.info(`目标材料: ${material_name}\n鱼类: ${msg}`);
                         for (const path of path_pathing) {
                             const fish_sort_regex = new RegExp(msg.join("|"));
-                            if (fish_sort_regex.test(path)) {
+                            if (fish_sort_regex.test(path) && regex_area.test(path.split("-")[0])) {
                                 path_list.push(path);
                             }
                         }
@@ -634,13 +635,24 @@
         }
     }
 
-    // 只排序已筛选钓点；同地区及未指定地区保持原顺序，不增加或移除钓点。
+    // 未迁移的旧配置仍可使用；同时设置旧筛选和优先项时优先保留筛选范围。
+    function get_region_strategy() {
+        const areas = settings.path_sort_area ? Array.from(settings.path_sort_area) : [];
+        const legacy_priority = settings.path_priority_area ? Array.from(settings.path_priority_area) : [];
+        const explicit_mode = ["地区筛选", "地区优先", "随机化"].includes(settings.path_region_mode);
+        const mode = explicit_mode ? settings.path_region_mode
+            : areas.length === 0 && legacy_priority.length !== 0 ? "地区优先" : "地区筛选";
+        return { mode, areas: explicit_mode || areas.length !== 0 ? areas : legacy_priority };
+    }
+
+    // 只排序地区优先模式的钓点；同地区及未指定地区保持原顺序。
     function prioritize_paths(paths) {
-        if (!paths || !settings.path_priority_area) {
+        const strategy = get_region_strategy();
+        if (!paths || strategy.mode !== "地区优先") {
             return paths;
         }
         const priority_areas = [];
-        for (const area of Array.from(settings.path_priority_area)) {
+        for (const area of strategy.areas) {
             if (area_list.includes(area) && !priority_areas.includes(area)) {
                 priority_areas.push(area);
             }
@@ -654,6 +666,41 @@
             return { path, index, rank: rank === -1 ? priority_areas.length : rank };
         }).sort((a, b) => a.rank - b.rank || a.index - b.index)
             .map(item => item.path);
+    }
+
+    // 与 run_file 的目标鱼昼夜判断一致，只用于随机化前的可用性预检。
+    function required_sessions(path_msg) {
+        const fish_need = list_fish.filter(item => path_msg["fish_type"].includes(item));
+        if (fish_need.some(item => new RegExp(time_msg["全天"].join("|")).test(item))) {
+            return ["Daytime", "Nighttime"];
+        }
+        const sessions = [];
+        if (fish_need.some(item => new RegExp(time_msg["白天"].join("|")).test(item))) sessions.push("Daytime");
+        if (fish_need.some(item => new RegExp(time_msg["夜晚"].join("|")).test(item))) sessions.push("Nighttime");
+        return sessions;
+    }
+
+    function prepare_paths(paths, fishing_cd, is_con, user_id) {
+        if (!paths || is_con) return paths;
+        if (get_region_strategy().mode !== "随机化") return prioritize_paths(paths);
+        const now = Date.now();
+        const available = paths.filter(path => {
+            const msg = get_pathing_msg(path);
+            if (settings.block_gcm && msg["addition"] === "GCM") return false;
+            if (!settings.block_fight && msg["addition"] === "战斗") return false;
+            if (!settings.block_tsurumi && /鹤观/.test(msg["detail"])) return false;
+            if (!fishing_cd) return true;
+            const record = read_archive(`${msg["area"]}-${msg["type"]}-${msg["detail"]}`, user_id);
+            if (record === null) return true;
+            return required_sessions(msg).some(session => record[session] == null || !(now < cdCal(session, record)));
+        });
+        // Fisher–Yates：只重排可用钓点，不修改筛选结果或冷却记录。
+        for (let i = available.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [available[i], available[j]] = [available[j], available[i]];
+        }
+        log.info(`随机化: ${paths.length} 个候选钓点，排除 ${paths.length - available.length} 个冷却或禁用路线钓点，随机执行 ${available.length} 个`);
+        return available;
     }
 
     async function run_file(path_msg, time_out_throw, time_out_whole, is_con, developer_log, block_gcm, block_fight, block_tsurumi, tsurumi_method, auto_skip, fishing_cd, uid, is_time_kill, time_target, kill_hour, kill_minute, notification_msg) {
@@ -1072,7 +1119,7 @@
             return null;
         }
         // 筛选路径
-        let path_filter = prioritize_paths(pathing_filter());
+        let path_filter = pathing_filter();
         // 读取要继续的路径
         let path_continue = typeof(settings.path_continue) === 'undefined' ? "无(默认)" : settings.path_continue;
         let is_continue = true;
@@ -1163,6 +1210,13 @@
                 log.info(`当前为多人模式且并非房主，垂钓点CD统计将记录1P(uid: ${ocrResult})的CD(不影响单人模式的CD记录)`);
             }
             mainUiCapture.dispose();
+        }
+
+        // UID 与多人模式已确认后，再按地区策略及冷却状态生成执行顺序。
+        path_filter = prepare_paths(path_filter, fishing_cd, is_con, uid);
+        if (!is_con && get_region_strategy().mode === "随机化" && path_continue !== "无(默认)") {
+            log.info("随机化模式已忽略固定续跑起点，每次从可用钓点重新随机排列。");
+            path_continue = "无(默认)";
         }
 
         if (is_time_kill) {

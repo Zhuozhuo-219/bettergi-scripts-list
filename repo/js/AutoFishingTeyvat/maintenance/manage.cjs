@@ -101,6 +101,19 @@ function sync() {
     console.log('上游同步并验证完成；请退出 BetterGI 后执行 deploy。');
 }
 
+function migrateRegionSettings(settings = {}) {
+    if (settings.path_region_mode !== undefined) return settings;
+    const selected = Array.isArray(settings.path_sort_area) ? settings.path_sort_area : [];
+    const priority = Array.isArray(settings.path_priority_area) ? settings.path_priority_area : [];
+    const usePriority = selected.length === 0 && priority.length !== 0;
+    const migrated = { ...settings,
+        path_region_mode: usePriority ? '地区优先' : '地区筛选',
+        path_sort_area: [...(usePriority ? priority : selected)]
+    };
+    delete migrated.path_priority_area;
+    return migrated;
+}
+
 // 独立于 CLI 的部署操作，测试使用临时安装目录验证保留记录和配置。
 function deployToRoot(bgiRoot, switchGroups = false, backupBase) {
     bgiRoot = path.resolve(bgiRoot);
@@ -145,7 +158,7 @@ function deployToRoot(bgiRoot, switchGroups = false, backupBase) {
         atomicWrite(archive, fs.readFileSync(originalArchive));
     }
     const changedGroups = [];
-    if (switchGroups) {
+    {
         const groupRoot = path.join(bgiRoot, 'User', 'ScriptGroup');
         for (const name of fs.readdirSync(groupRoot).filter(name => name.endsWith('.json'))) {
             const file = safeJoin(groupRoot, name);
@@ -153,10 +166,17 @@ function deployToRoot(bgiRoot, switchGroups = false, backupBase) {
             const group = JSON.parse(data.replace(/^\uFEFF/, ''));
             let changed = false;
             for (const project of group.projects || []) {
-                if (project.type === 'Javascript' && project.folderName === 'AutoFishingTeyvat') {
+                if (switchGroups && project.type === 'Javascript' && project.folderName === 'AutoFishingTeyvat') {
                     project.folderName = folder;
                     project.name = displayName;
                     changed = true;
+                }
+                if (project.type === 'Javascript' && project.folderName === folder) {
+                    const migrated = migrateRegionSettings(project.jsScriptSettingsObject);
+                    if (JSON.stringify(migrated) !== JSON.stringify(project.jsScriptSettingsObject)) {
+                        project.jsScriptSettingsObject = migrated;
+                        changed = true;
+                    }
                 }
             }
             if (changed) {
@@ -198,7 +218,7 @@ function main() {
     throw new Error('Usage: node maintenance/manage.cjs verify|sync|deploy [--bgi-root PATH] [--switch-groups]');
 }
 
-module.exports = { deployToRoot, safeJoin };
+module.exports = { deployToRoot, safeJoin, migrateRegionSettings };
 if (require.main === module) {
     try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
