@@ -634,6 +634,28 @@
         }
     }
 
+    // 只排序已筛选钓点；同地区及未指定地区保持原顺序，不增加或移除钓点。
+    function prioritize_paths(paths) {
+        if (!paths || !settings.path_priority_area) {
+            return paths;
+        }
+        const priority_areas = [];
+        for (const area of Array.from(settings.path_priority_area)) {
+            if (area_list.includes(area) && !priority_areas.includes(area)) {
+                priority_areas.push(area);
+            }
+        }
+        if (priority_areas.length === 0) {
+            return paths;
+        }
+        log.info(`地区优先顺序: ${priority_areas.map((area, index) => `${index + 1}.${area}`).join(" → ")} → 其余地区（如有）`);
+        return paths.map((path, index) => {
+            const rank = priority_areas.indexOf(path.split("-")[0]);
+            return { path, index, rank: rank === -1 ? priority_areas.length : rank };
+        }).sort((a, b) => a.rank - b.rank || a.index - b.index)
+            .map(item => item.path);
+    }
+
     async function run_file(path_msg, time_out_throw, time_out_whole, is_con, developer_log, block_gcm, block_fight, block_tsurumi, tsurumi_method, auto_skip, fishing_cd, uid, is_time_kill, time_target, kill_hour, kill_minute, notification_msg) {
         const base_path_pathing = "assets/pathing/";
         const base_path_gcm = "assets/KeyMouseScript/";
@@ -1050,7 +1072,7 @@
             return null;
         }
         // 筛选路径
-        let path_filter = pathing_filter();
+        let path_filter = prioritize_paths(pathing_filter());
         // 读取要继续的路径
         let path_continue = typeof(settings.path_continue) === 'undefined' ? "无(默认)" : settings.path_continue;
         let is_continue = true;
