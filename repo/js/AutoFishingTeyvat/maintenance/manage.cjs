@@ -78,6 +78,10 @@ function verify() {
     inspect(path.join(scriptRoot, 'assets'));
     for (const name of ['manifest.json', 'settings.json']) JSON.parse(fs.readFileSync(path.join(scriptRoot, name), 'utf8'));
     console.log(`资源 JSON 校验通过：${count} 个。`);
+    const strongboxVerifier = path.join(repoRoot, 'repo', 'js', 'ArtifactStrongbox', 'tools', 'verify-all.mjs');
+    if (fs.existsSync(strongboxVerifier)) {
+        process.stdout.write(run(process.execPath, [strongboxVerifier]));
+    }
 }
 
 function sync() {

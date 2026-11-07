@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><meta charset="utf-8"><title>拟培养角色</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:transparent;color:#eef1f7;font:16px "Microsoft YaHei",sans-serif}
+main{position:absolute;left:50%;top:5vh;transform:translateX(-50%);width:1080px;max-width:94vw;max-height:92vh;overflow:auto;background:#202a39f5;border:1px solid #64728a;border-radius:18px;padding:28px;box-shadow:0 18px 65px #0009}
+h1{font-size:24px;margin:0 0 12px;color:#eed19a}p{line-height:1.7;color:#b9c5d8;margin:8px 0}input[type=search]{width:100%;padding:12px;background:#131d2b;border:1px solid #57657c;border-radius:8px;color:white;margin:12px 0}
+#list{max-height:53vh;overflow:auto;padding:4px}.group-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.element-title{font-size:18px;color:#eed19a;padding-bottom:8px;border-bottom:1px solid #ffffff22;margin:14px 0 12px}label{padding:14px 10px;background:#303d50;border:1px solid transparent;border-radius:8px;cursor:pointer}label:has(:checked){border-color:#e2bd76;background:#514838}input[type=checkbox]{accent-color:#dfbb78;margin-right:8px}.owned{font-size:11px;color:#a9d9bc;margin-left:4px}#element-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}#element-tabs button{padding:7px 16px;background:#354258;color:#dfe8f5}#element-tabs button.active{background:#e7c88e;color:#29251e}
+footer{display:flex;align-items:center;justify-content:space-between;margin-top:20px}button{cursor:pointer;border:0;border-radius:8px;padding:12px 25px;font:inherit;background:#e7c88e;color:#29251e}button:disabled{opacity:.4;cursor:default}#error{color:#ffabab;min-height:22px}#clear{background:transparent;color:#becadd;padding:8px}
+</style>
+<main><h1>选择拟培养角色</h1><p id="account"></p><p>此窗口可预设培养名单。三合一遮罩中可继续勾选已录入角色，并与套装及主词条适配角色合并评分；未录入角色需先录入后参与推荐匹配。评分采用现有通用权重。</p>
+<input id="search" type="search" placeholder="搜索中文 / 全拼 / 首字母，例如：纳西妲 / naxida / nxd"><div id="element-tabs"></div><div id="list"></div><p id="error"></p><footer><span id="count"></span><div><button id="clear">清空</button><button id="save" disabled>保存选择</button></div></footer></main>
+<script>
+let initialized=false,catalog=[],selected=new Set(),activeElement='全部'
+const ELEMENTS=['火','水','风','雷','草','冰','岩','其他']
+const normalizeSearch=value=>String(value||'').normalize('NFKC').toLowerCase().replace(/ü/g,'v').normalize('NFD').replace(/[\u0300-\u036f\s'’·・（）()_-]/g,'')
+const el=id=>document.getElementById(id)
+function render(){
+  const query=normalizeSearch(el('search').value)
+  el('element-tabs').replaceChildren(...['全部',...ELEMENTS.filter(element=>catalog.some(row=>(row.element||'其他')===element))].map(element=>{
+    const button=document.createElement('button');button.textContent=element==='全部'?'全部元素':element;button.className=activeElement===element?'active':''
+    button.onclick=()=>{activeElement=element;el('list').scrollTop=0;render()};return button
+  }))
+  el('list').replaceChildren()
+  for(const element of ELEMENTS){
+    if(activeElement!=='全部'&&activeElement!==element)continue
+    const rows=catalog.filter(row=>(row.element||'其他')===element&&(!query||[row.name,...(row.searchKeys||[])].some(key=>normalizeSearch(key).includes(query))))
+    if(!rows.length)continue
+    const section=document.createElement('section'),title=document.createElement('h2'),grid=document.createElement('div')
+    title.className='element-title';title.textContent=element+'元素 · '+rows.length;grid.className='group-grid'
+    for(const row of rows){
+    const label=document.createElement('label'),box=document.createElement('input')
+    box.type='checkbox';box.checked=selected.has(row.name)
+    box.onchange=()=>{box.checked?selected.add(row.name):selected.delete(row.name);update()}
+    label.append(box,document.createTextNode(row.name))
+    if(row.owned){const tag=document.createElement('span');tag.className='owned';tag.textContent='已录入';label.append(tag)}
+      grid.append(label)
+    }
+    section.replaceChildren(title,grid);el('list').append(section)
+  }update()
+}
+function update(){el('count').textContent='已选 '+selected.size+' 位角色';el('save').disabled=!selected.size}
+el('search').oninput=()=>{activeElement='全部';render()}
+el('clear').onclick=()=>{selected.clear();render()}
+el('save').onclick=()=>{window.chrome?.webview?.postMessage(JSON.stringify({url:'/training/save',data:{characters:[...selected]}}))}
+if(window.htmlMask)window.htmlMask.onMessage=message=>{
+  let data=message.data?.data||message.data;if(typeof data==='string')data=JSON.parse(data)
+  if(message.url==='/training/error'){el('error').textContent=data.message;return}
+  if(message.url!=='/training'||initialized)return
+  initialized=true;catalog=data.catalog;selected=new Set(data.selected.filter(name=>catalog.some(row=>row.name===name)))
+  el('account').textContent='当前用户标识：'+data.accountId
+  el('error').textContent=data.unsupported?.length?'以下录入名称未匹配评分库，请核对OCR或补充规则：'+data.unsupported.join('、'):''
+  render()
+}
+</script></html>

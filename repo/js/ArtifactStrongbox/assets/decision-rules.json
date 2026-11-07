@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "description": "取舍数据库占位；当前版本不执行规则，始终保留人工判断。",
+  "rules": []
+}

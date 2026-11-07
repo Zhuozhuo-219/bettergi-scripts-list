@@ -1,0 +1,214 @@
+{
+  "source": "Actual RapidOCR on user reference images, 2026-10-26; not BGI game test; public regression copy: identifiers replaced, original images excluded",
+  "examples": [
+    {
+      "file": "自定义名称-人偶.png",
+      "items": [
+        {
+          "text": "冰元素/例",
+          "x": 138.0,
+          "y": 31.0,
+          "width": 113.0,
+          "height": 33.0,
+          "ocrField": "header",
+          "confidence": 0.927217710018158
+        },
+        {
+          "text": "例名",
+          "x": 238.0,
+          "y": 32.0,
+          "width": 57.0,
+          "height": 31.0,
+          "ocrField": "header",
+          "confidence": 0.9997186362743378
+        },
+        {
+          "text": "属性",
+          "x": 150.0,
+          "y": 134.0,
+          "width": 82.0,
+          "height": 40.0,
+          "ocrField": "menu",
+          "confidence": 0.9991107881069183
+        },
+        {
+          "text": "武器",
+          "x": 142.0,
+          "y": 206.0,
+          "width": 67.0,
+          "height": 34.0,
+          "ocrField": "menu",
+          "confidence": 0.9984026849269867
+        },
+        {
+          "text": "圣遗物",
+          "x": 144.0,
+          "y": 277.0,
+          "width": 96.0,
+          "height": 32.0,
+          "ocrField": "menu",
+          "confidence": 0.9979675809542338
+        },
+        {
+          "text": "5",
+          "x": 254.0,
+          "y": 282.0,
+          "width": 18.0,
+          "height": 22.0,
+          "ocrField": "menu",
+          "confidence": 0.999640941619873
+        },
+        {
+          "text": "例名",
+          "x": 1461.0,
+          "y": 126.0,
+          "width": 82.0,
+          "height": 48.0,
+          "ocrField": "characterName",
+          "confidence": 0.9998635649681091
+        },
+        {
+          "text": "等级20/20",
+          "x": 1465.0,
+          "y": 206.0,
+          "width": 169.0,
+          "height": 38.0,
+          "ocrField": "characterLevel",
+          "confidence": 0.9922993949481419
+        },
+        {
+          "text": "笔名「欧科塔维亚」的魔女托付给你",
+          "x": 1465.0,
+          "y": 601.0,
+          "width": 322.0,
+          "height": 20.0,
+          "ocrField": "biography",
+          "confidence": 0.9564856477081776
+        },
+        {
+          "text": "和派蒙的人偶，善于探索「千星奇域」",
+          "x": 1465.0,
+          "y": 628.0,
+          "width": 334.0,
+          "height": 19.0,
+          "ocrField": "biography",
+          "confidence": 0.926352767383351
+        },
+        {
+          "text": "中封存的奥秘。",
+          "x": 1465.0,
+          "y": 653.0,
+          "width": 131.0,
+          "height": 21.0,
+          "ocrField": "biography",
+          "confidence": 0.9943878735814776
+        },
+        {
+          "text": "生命值上限",
+          "x": 1468.0,
+          "y": 286.0,
+          "width": 134.0,
+          "height": 24.0,
+          "ocrField": "archiveBiography",
+          "confidence": 0.9980770826339722
+        },
+        {
+          "text": "2,342",
+          "x": 1733.0,
+          "y": 288.0,
+          "width": 64.0,
+          "height": 23.0,
+          "ocrField": "archiveBiography",
+          "confidence": 0.9718635201454162
+        }
+      ]
+    },
+    {
+      "file": "自定义名称-流浪者图鉴.png",
+      "items": [
+        {
+          "text": "风元素/ 流浪者",
+          "x": 137.0,
+          "y": 30.0,
+          "width": 184.0,
+          "height": 36.0,
+          "ocrField": "header",
+          "confidence": 0.9341729879379272
+        },
+        {
+          "text": "属性",
+          "x": 148.0,
+          "y": 133.0,
+          "width": 84.0,
+          "height": 42.0,
+          "ocrField": "menu",
+          "confidence": 0.9986939430236816
+        },
+        {
+          "text": "命之座",
+          "x": 143.0,
+          "y": 206.0,
+          "width": 98.0,
+          "height": 34.0,
+          "ocrField": "menu",
+          "confidence": 0.9976919293403625
+        },
+        {
+          "text": "天赋",
+          "x": 143.0,
+          "y": 276.0,
+          "width": 67.0,
+          "height": 34.0,
+          "ocrField": "menu",
+          "confidence": 0.9987378418445587
+        },
+        {
+          "text": "流浪者",
+          "x": 1460.0,
+          "y": 127.0,
+          "width": 112.0,
+          "height": 51.0,
+          "ocrField": "characterName",
+          "confidence": 0.9996174573898315
+        },
+        {
+          "text": "身份成谜的流浪人士。衣着打扮像是",
+          "x": 1465.0,
+          "y": 230.0,
+          "width": 330.0,
+          "height": 22.0,
+          "ocrField": "characterLevel",
+          "confidence": 0.9859790280461311
+        },
+        {
+          "text": "身份成谜的流浪人士。衣着打扮像是",
+          "x": 1464.0,
+          "y": 230.0,
+          "width": 332.0,
+          "height": 23.0,
+          "ocrField": "archiveBiography",
+          "confidence": 0.9873197004199028
+        },
+        {
+          "text": "修验者，言行却并不是修验者应有的",
+          "x": 1464.0,
+          "y": 256.0,
+          "width": 332.0,
+          "height": 23.0,
+          "ocrField": "archiveBiography",
+          "confidence": 0.990490198135376
+        },
+        {
+          "text": "模样",
+          "x": 1464.0,
+          "y": 284.0,
+          "width": 44.0,
+          "height": 20.0,
+          "ocrField": "archiveBiography",
+          "confidence": 0.9965085983276367
+        }
+      ]
+    }
+  ],
+  "redacted": true
+}

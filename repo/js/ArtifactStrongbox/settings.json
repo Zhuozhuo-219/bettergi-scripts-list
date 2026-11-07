@@ -1,0 +1,50 @@
+[
+  {
+    "name": "runCharacterWarehouse",
+    "type": "checkbox",
+    "label": "运行角色仓库录入（本次仅录入，完成后结束）",
+    "default": false
+  },
+  {
+    "name": "skipExistingCharacters",
+    "type": "checkbox",
+    "label": "跳过已有数据角色（仅身份、五部位装备及推荐信息完整时）",
+    "default": false
+  },
+  {
+    "name": "selectTrainingCharacters",
+    "type": "checkbox",
+    "label": "选择拟培养角色（按用户标识保存，本次选择后结束）",
+    "default": false
+  },
+  {
+    "name": "userIdentifier",
+    "type": "input-text",
+    "label": "用户标识（必填，可用UID；区分角色仓库与拟培养角色选择）",
+    "default": ""
+  },
+  {
+    "name": "artifactCountEstimate",
+    "type": "input-text",
+    "label": "当前圣遗物总量估计（0～2700，留空为未知；三合一后不自动扣减）",
+    "default": ""
+  },
+  {
+    "name": "pollInterval",
+    "type": "input-text",
+    "label": "识别间隔（毫秒，最低 500）",
+    "default": "1000"
+  },
+  {
+    "name": "simulationCount",
+    "type": "input-text",
+    "label": "随机强化模拟次数 N（100～50000）",
+    "default": "10000"
+  },
+  {
+    "name": "showRegion",
+    "type": "checkbox",
+    "label": "显示详情识别区域边框",
+    "default": false
+  }
+]

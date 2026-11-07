@@ -1,0 +1,1116 @@
+{
+  "schemaVersion": 1,
+  "nameDictionarySha256": "f77c590ed2445f9b09f10bde45a07d9915c0252382e3368652fc8b7069027fab",
+  "generator": {
+    "package": "pypinyin",
+    "version": "0.55.0",
+    "license": "MIT",
+    "source": "https://github.com/mozillazg/python-pinyin"
+  },
+  "polyphonicSearchAliases": {
+    "白术": [
+      "bai zhu",
+      "bai shu"
+    ],
+    "重云": [
+      "chong yun",
+      "zhong yun"
+    ],
+    "行秋": [
+      "xing qiu",
+      "hang qiu"
+    ],
+    "八重神子": [
+      "ba chong shen zi",
+      "ba zhong shen zi"
+    ],
+    "茜特菈莉": [
+      "qian te la li",
+      "xi te la li"
+    ]
+  },
+  "entries": {
+    "七七": {
+      "pinyin": "qiqi",
+      "initials": "qq",
+      "aliases": [
+        "qiqi",
+        "qq"
+      ]
+    },
+    "丝柯克": {
+      "pinyin": "sikeke",
+      "initials": "skk",
+      "aliases": [
+        "sikeke",
+        "skk"
+      ]
+    },
+    "丽莎": {
+      "pinyin": "lisha",
+      "initials": "ls",
+      "aliases": [
+        "lisha",
+        "ls"
+      ]
+    },
+    "久岐忍": {
+      "pinyin": "jiuqiren",
+      "initials": "jqr",
+      "aliases": [
+        "jiuqiren",
+        "jqr"
+      ]
+    },
+    "九条裟罗": {
+      "pinyin": "jiutiaoshaluo",
+      "initials": "jtsl",
+      "aliases": [
+        "jiutiaoshaluo",
+        "jtsl"
+      ]
+    },
+    "云堇": {
+      "pinyin": "yunjin",
+      "initials": "yj",
+      "aliases": [
+        "yunjin",
+        "yj"
+      ]
+    },
+    "五郎": {
+      "pinyin": "wulang",
+      "initials": "wl",
+      "aliases": [
+        "wulang",
+        "wl"
+      ]
+    },
+    "人偶A": {
+      "pinyin": "renoua",
+      "initials": "roa",
+      "aliases": [
+        "renoua",
+        "roa"
+      ]
+    },
+    "人偶B": {
+      "pinyin": "renoub",
+      "initials": "rob",
+      "aliases": [
+        "renoub",
+        "rob"
+      ]
+    },
+    "伊安珊": {
+      "pinyin": "yianshan",
+      "initials": "yas",
+      "aliases": [
+        "yianshan",
+        "yas"
+      ]
+    },
+    "伊法": {
+      "pinyin": "yifa",
+      "initials": "yf",
+      "aliases": [
+        "yifa",
+        "yf"
+      ]
+    },
+    "伊涅芙": {
+      "pinyin": "yiniefu",
+      "initials": "ynf",
+      "aliases": [
+        "yiniefu",
+        "ynf"
+      ]
+    },
+    "优菈": {
+      "pinyin": "youla",
+      "initials": "yl",
+      "aliases": [
+        "youla",
+        "yl"
+      ]
+    },
+    "克洛琳德": {
+      "pinyin": "keluolinde",
+      "initials": "klld",
+      "aliases": [
+        "keluolinde",
+        "klld"
+      ]
+    },
+    "八重神子": {
+      "pinyin": "bazhongshenzi",
+      "initials": "bzsz",
+      "aliases": [
+        "bazhongshenzi",
+        "bzsz",
+        "bachongshenzi",
+        "bcsz"
+      ]
+    },
+    "兹白": {
+      "pinyin": "zibai",
+      "initials": "zb",
+      "aliases": [
+        "zibai",
+        "zb"
+      ]
+    },
+    "凝光": {
+      "pinyin": "ningguang",
+      "initials": "ng",
+      "aliases": [
+        "ningguang",
+        "ng"
+      ]
+    },
+    "凯亚": {
+      "pinyin": "kaiya",
+      "initials": "ky",
+      "aliases": [
+        "kaiya",
+        "ky"
+      ]
+    },
+    "刻晴": {
+      "pinyin": "keqing",
+      "initials": "kq",
+      "aliases": [
+        "keqing",
+        "kq"
+      ]
+    },
+    "北斗": {
+      "pinyin": "beidou",
+      "initials": "bd",
+      "aliases": [
+        "beidou",
+        "bd"
+      ]
+    },
+    "千织": {
+      "pinyin": "qianzhi",
+      "initials": "qz",
+      "aliases": [
+        "qianzhi",
+        "qz"
+      ]
+    },
+    "卡维": {
+      "pinyin": "kawei",
+      "initials": "kw",
+      "aliases": [
+        "kawei",
+        "kw"
+      ]
+    },
+    "卡齐娜": {
+      "pinyin": "kaqina",
+      "initials": "kqn",
+      "aliases": [
+        "kaqina",
+        "kqn"
+      ]
+    },
+    "可莉": {
+      "pinyin": "keli",
+      "initials": "kl",
+      "aliases": [
+        "keli",
+        "kl"
+      ]
+    },
+    "叶洛亚": {
+      "pinyin": "yeluoya",
+      "initials": "yly",
+      "aliases": [
+        "yeluoya",
+        "yly"
+      ]
+    },
+    "哥伦比娅": {
+      "pinyin": "gelunbiya",
+      "initials": "glby",
+      "aliases": [
+        "gelunbiya",
+        "glby"
+      ]
+    },
+    "嘉明": {
+      "pinyin": "jiaming",
+      "initials": "jm",
+      "aliases": [
+        "jiaming",
+        "jm"
+      ]
+    },
+    "坎蒂丝": {
+      "pinyin": "kandisi",
+      "initials": "kds",
+      "aliases": [
+        "kandisi",
+        "kds"
+      ]
+    },
+    "埃洛伊": {
+      "pinyin": "ailuoyi",
+      "initials": "aly",
+      "aliases": [
+        "ailuoyi",
+        "aly"
+      ]
+    },
+    "基尼奇": {
+      "pinyin": "jiniqi",
+      "initials": "jnq",
+      "aliases": [
+        "jiniqi",
+        "jnq"
+      ]
+    },
+    "塔利雅": {
+      "pinyin": "taliya",
+      "initials": "tly",
+      "aliases": [
+        "taliya",
+        "tly"
+      ]
+    },
+    "夏沃蕾": {
+      "pinyin": "xiawolei",
+      "initials": "xwl",
+      "aliases": [
+        "xiawolei",
+        "xwl"
+      ]
+    },
+    "夏洛蒂": {
+      "pinyin": "xialuodi",
+      "initials": "xld",
+      "aliases": [
+        "xialuodi",
+        "xld"
+      ]
+    },
+    "多莉": {
+      "pinyin": "duoli",
+      "initials": "dl",
+      "aliases": [
+        "duoli",
+        "dl"
+      ]
+    },
+    "夜兰": {
+      "pinyin": "yelan",
+      "initials": "yl",
+      "aliases": [
+        "yelan",
+        "yl"
+      ]
+    },
+    "奇偶·女性": {
+      "pinyin": "jiounvxing",
+      "initials": "jonx",
+      "aliases": [
+        "jiounvxing",
+        "jonx"
+      ]
+    },
+    "奇偶·男性": {
+      "pinyin": "jiounanxing",
+      "initials": "jonx",
+      "aliases": [
+        "jiounanxing",
+        "jonx"
+      ]
+    },
+    "奈芙尔": {
+      "pinyin": "naifuer",
+      "initials": "nfe",
+      "aliases": [
+        "naifuer",
+        "nfe"
+      ]
+    },
+    "奥黛塔": {
+      "pinyin": "aodaita",
+      "initials": "adt",
+      "aliases": [
+        "aodaita",
+        "adt"
+      ]
+    },
+    "妮露": {
+      "pinyin": "nilu",
+      "initials": "nl",
+      "aliases": [
+        "nilu",
+        "nl"
+      ]
+    },
+    "娜维娅": {
+      "pinyin": "naweiya",
+      "initials": "nwy",
+      "aliases": [
+        "naweiya",
+        "nwy"
+      ]
+    },
+    "安柏": {
+      "pinyin": "anbai",
+      "initials": "ab",
+      "aliases": [
+        "anbai",
+        "ab"
+      ]
+    },
+    "宵宫": {
+      "pinyin": "xiaogong",
+      "initials": "xg",
+      "aliases": [
+        "xiaogong",
+        "xg"
+      ]
+    },
+    "尼可": {
+      "pinyin": "nike",
+      "initials": "nk",
+      "aliases": [
+        "nike",
+        "nk"
+      ]
+    },
+    "布伦妮": {
+      "pinyin": "bulunni",
+      "initials": "bln",
+      "aliases": [
+        "bulunni",
+        "bln"
+      ]
+    },
+    "希格雯": {
+      "pinyin": "xigewen",
+      "initials": "xgw",
+      "aliases": [
+        "xigewen",
+        "xgw"
+      ]
+    },
+    "希诺宁": {
+      "pinyin": "xinuoning",
+      "initials": "xnn",
+      "aliases": [
+        "xinuoning",
+        "xnn"
+      ]
+    },
+    "恰斯卡": {
+      "pinyin": "qiasika",
+      "initials": "qsk",
+      "aliases": [
+        "qiasika",
+        "qsk"
+      ]
+    },
+    "托马": {
+      "pinyin": "tuoma",
+      "initials": "tm",
+      "aliases": [
+        "tuoma",
+        "tm"
+      ]
+    },
+    "提纳里": {
+      "pinyin": "tinali",
+      "initials": "tnl",
+      "aliases": [
+        "tinali",
+        "tnl"
+      ]
+    },
+    "旅行者": {
+      "pinyin": "lvxingzhe",
+      "initials": "lxz",
+      "aliases": [
+        "lvxingzhe",
+        "lxz"
+      ]
+    },
+    "旅行者（冰）": {
+      "pinyin": "lvxingzhebing",
+      "initials": "lxzb",
+      "aliases": [
+        "lvxingzhebing",
+        "lxzb"
+      ]
+    },
+    "旅行者（岩）": {
+      "pinyin": "lvxingzheyan",
+      "initials": "lxzy",
+      "aliases": [
+        "lvxingzheyan",
+        "lxzy"
+      ]
+    },
+    "旅行者（水）": {
+      "pinyin": "lvxingzheshui",
+      "initials": "lxzs",
+      "aliases": [
+        "lvxingzheshui",
+        "lxzs"
+      ]
+    },
+    "旅行者（火）": {
+      "pinyin": "lvxingzhehuo",
+      "initials": "lxzh",
+      "aliases": [
+        "lvxingzhehuo",
+        "lxzh"
+      ]
+    },
+    "旅行者（草）": {
+      "pinyin": "lvxingzhecao",
+      "initials": "lxzc",
+      "aliases": [
+        "lvxingzhecao",
+        "lxzc"
+      ]
+    },
+    "旅行者（雷）": {
+      "pinyin": "lvxingzhelei",
+      "initials": "lxzl",
+      "aliases": [
+        "lvxingzhelei",
+        "lxzl"
+      ]
+    },
+    "旅行者（风）": {
+      "pinyin": "lvxingzhefeng",
+      "initials": "lxzf",
+      "aliases": [
+        "lvxingzhefeng",
+        "lxzf"
+      ]
+    },
+    "早柚": {
+      "pinyin": "zaoyou",
+      "initials": "zy",
+      "aliases": [
+        "zaoyou",
+        "zy"
+      ]
+    },
+    "杜林": {
+      "pinyin": "dulin",
+      "initials": "dl",
+      "aliases": [
+        "dulin",
+        "dl"
+      ]
+    },
+    "林尼": {
+      "pinyin": "linni",
+      "initials": "ln",
+      "aliases": [
+        "linni",
+        "ln"
+      ]
+    },
+    "枫原万叶": {
+      "pinyin": "fengyuanwanye",
+      "initials": "fywy",
+      "aliases": [
+        "fengyuanwanye",
+        "fywy"
+      ]
+    },
+    "柯莱": {
+      "pinyin": "kelai",
+      "initials": "kl",
+      "aliases": [
+        "kelai",
+        "kl"
+      ]
+    },
+    "桑多涅": {
+      "pinyin": "sangduonie",
+      "initials": "sdn",
+      "aliases": [
+        "sangduonie",
+        "sdn"
+      ]
+    },
+    "梦见月瑞希": {
+      "pinyin": "mengjianyueruixi",
+      "initials": "mjyrx",
+      "aliases": [
+        "mengjianyueruixi",
+        "mjyrx"
+      ]
+    },
+    "欧洛伦": {
+      "pinyin": "ouluolun",
+      "initials": "oll",
+      "aliases": [
+        "ouluolun",
+        "oll"
+      ]
+    },
+    "沃雅妮莎": {
+      "pinyin": "woyanisha",
+      "initials": "wyns",
+      "aliases": [
+        "woyanisha",
+        "wyns"
+      ]
+    },
+    "法尔伽": {
+      "pinyin": "faerga",
+      "initials": "feg",
+      "aliases": [
+        "faerga",
+        "feg"
+      ]
+    },
+    "洛恩": {
+      "pinyin": "luoen",
+      "initials": "le",
+      "aliases": [
+        "luoen",
+        "le"
+      ]
+    },
+    "流浪者": {
+      "pinyin": "liulangzhe",
+      "initials": "llz",
+      "aliases": [
+        "liulangzhe",
+        "llz"
+      ]
+    },
+    "温迪": {
+      "pinyin": "wendi",
+      "initials": "wd",
+      "aliases": [
+        "wendi",
+        "wd"
+      ]
+    },
+    "烟绯": {
+      "pinyin": "yanfei",
+      "initials": "yf",
+      "aliases": [
+        "yanfei",
+        "yf"
+      ]
+    },
+    "爱可菲": {
+      "pinyin": "aikefei",
+      "initials": "akf",
+      "aliases": [
+        "aikefei",
+        "akf"
+      ]
+    },
+    "爱诺": {
+      "pinyin": "ainuo",
+      "initials": "an",
+      "aliases": [
+        "ainuo",
+        "an"
+      ]
+    },
+    "玛拉妮": {
+      "pinyin": "malani",
+      "initials": "mln",
+      "aliases": [
+        "malani",
+        "mln"
+      ]
+    },
+    "玛薇卡": {
+      "pinyin": "maweika",
+      "initials": "mwk",
+      "aliases": [
+        "maweika",
+        "mwk"
+      ]
+    },
+    "珊瑚宫心海": {
+      "pinyin": "shanhugongxinhai",
+      "initials": "shgxh",
+      "aliases": [
+        "shanhugongxinhai",
+        "shgxh"
+      ]
+    },
+    "珐露珊": {
+      "pinyin": "falushan",
+      "initials": "fls",
+      "aliases": [
+        "falushan",
+        "fls"
+      ]
+    },
+    "班尼特": {
+      "pinyin": "bannite",
+      "initials": "bnt",
+      "aliases": [
+        "bannite",
+        "bnt"
+      ]
+    },
+    "琳妮特": {
+      "pinyin": "linnite",
+      "initials": "lnt",
+      "aliases": [
+        "linnite",
+        "lnt"
+      ]
+    },
+    "琴": {
+      "pinyin": "qin",
+      "initials": "q",
+      "aliases": [
+        "qin",
+        "q"
+      ]
+    },
+    "瑶瑶": {
+      "pinyin": "yaoyao",
+      "initials": "yy",
+      "aliases": [
+        "yaoyao",
+        "yy"
+      ]
+    },
+    "瓦雷莎": {
+      "pinyin": "waleisha",
+      "initials": "wls",
+      "aliases": [
+        "waleisha",
+        "wls"
+      ]
+    },
+    "甘雨": {
+      "pinyin": "ganyu",
+      "initials": "gy",
+      "aliases": [
+        "ganyu",
+        "gy"
+      ]
+    },
+    "申鹤": {
+      "pinyin": "shenhe",
+      "initials": "sh",
+      "aliases": [
+        "shenhe",
+        "sh"
+      ]
+    },
+    "白术": {
+      "pinyin": "baizhu",
+      "initials": "bz",
+      "aliases": [
+        "baizhu",
+        "bz",
+        "baishu",
+        "bs"
+      ]
+    },
+    "砂糖": {
+      "pinyin": "shatang",
+      "initials": "st",
+      "aliases": [
+        "shatang",
+        "st"
+      ]
+    },
+    "神里绫人": {
+      "pinyin": "shenlilingren",
+      "initials": "sllr",
+      "aliases": [
+        "shenlilingren",
+        "sllr"
+      ]
+    },
+    "神里绫华": {
+      "pinyin": "shenlilinghua",
+      "initials": "sllh",
+      "aliases": [
+        "shenlilinghua",
+        "sllh"
+      ]
+    },
+    "空": {
+      "pinyin": "kong",
+      "initials": "k",
+      "aliases": [
+        "kong",
+        "k"
+      ]
+    },
+    "米卡": {
+      "pinyin": "mika",
+      "initials": "mk",
+      "aliases": [
+        "mika",
+        "mk"
+      ]
+    },
+    "纳西妲": {
+      "pinyin": "naxida",
+      "initials": "nxd",
+      "aliases": [
+        "naxida",
+        "nxd"
+      ]
+    },
+    "绮良良": {
+      "pinyin": "qiliangliang",
+      "initials": "qll",
+      "aliases": [
+        "qiliangliang",
+        "qll"
+      ]
+    },
+    "罗莎莉亚": {
+      "pinyin": "luoshaliya",
+      "initials": "lsly",
+      "aliases": [
+        "luoshaliya",
+        "lsly"
+      ]
+    },
+    "胡桃": {
+      "pinyin": "hutao",
+      "initials": "ht",
+      "aliases": [
+        "hutao",
+        "ht"
+      ]
+    },
+    "艾尔海森": {
+      "pinyin": "aierhaisen",
+      "initials": "aehs",
+      "aliases": [
+        "aierhaisen",
+        "aehs"
+      ]
+    },
+    "艾梅莉埃": {
+      "pinyin": "aimeiliai",
+      "initials": "amla",
+      "aliases": [
+        "aimeiliai",
+        "amla"
+      ]
+    },
+    "芙宁娜": {
+      "pinyin": "funingna",
+      "initials": "fnn",
+      "aliases": [
+        "funingna",
+        "fnn"
+      ]
+    },
+    "芭芭拉": {
+      "pinyin": "babala",
+      "initials": "bbl",
+      "aliases": [
+        "babala",
+        "bbl"
+      ]
+    },
+    "茜特菈莉": {
+      "pinyin": "qiantelali",
+      "initials": "qtll",
+      "aliases": [
+        "qiantelali",
+        "qtll",
+        "xitelali",
+        "xtll"
+      ]
+    },
+    "荒泷一斗": {
+      "pinyin": "huanglongyidou",
+      "initials": "hlyd",
+      "aliases": [
+        "huanglongyidou",
+        "hlyd"
+      ]
+    },
+    "荧": {
+      "pinyin": "ying",
+      "initials": "y",
+      "aliases": [
+        "ying",
+        "y"
+      ]
+    },
+    "莉奈娅": {
+      "pinyin": "linaiya",
+      "initials": "lny",
+      "aliases": [
+        "linaiya",
+        "lny"
+      ]
+    },
+    "莫娜": {
+      "pinyin": "mona",
+      "initials": "mn",
+      "aliases": [
+        "mona",
+        "mn"
+      ]
+    },
+    "莱依拉": {
+      "pinyin": "laiyila",
+      "initials": "lyl",
+      "aliases": [
+        "laiyila",
+        "lyl"
+      ]
+    },
+    "莱欧斯利": {
+      "pinyin": "laiousili",
+      "initials": "losl",
+      "aliases": [
+        "laiousili",
+        "losl"
+      ]
+    },
+    "菈乌玛": {
+      "pinyin": "lawuma",
+      "initials": "lwm",
+      "aliases": [
+        "lawuma",
+        "lwm"
+      ]
+    },
+    "菲林斯": {
+      "pinyin": "feilinsi",
+      "initials": "fls",
+      "aliases": [
+        "feilinsi",
+        "fls"
+      ]
+    },
+    "菲米尼": {
+      "pinyin": "feimini",
+      "initials": "fmn",
+      "aliases": [
+        "feimini",
+        "fmn"
+      ]
+    },
+    "菲谢尔": {
+      "pinyin": "feixieer",
+      "initials": "fxe",
+      "aliases": [
+        "feixieer",
+        "fxe"
+      ]
+    },
+    "蓝砚": {
+      "pinyin": "lanyan",
+      "initials": "ly",
+      "aliases": [
+        "lanyan",
+        "ly"
+      ]
+    },
+    "薇斯纳": {
+      "pinyin": "weisina",
+      "initials": "wsn",
+      "aliases": [
+        "weisina",
+        "wsn"
+      ]
+    },
+    "行秋": {
+      "pinyin": "xingqiu",
+      "initials": "xq",
+      "aliases": [
+        "xingqiu",
+        "xq",
+        "hangqiu",
+        "hq"
+      ]
+    },
+    "诺艾尔": {
+      "pinyin": "nuoaier",
+      "initials": "nae",
+      "aliases": [
+        "nuoaier",
+        "nae"
+      ]
+    },
+    "赛索斯": {
+      "pinyin": "saisuosi",
+      "initials": "sss",
+      "aliases": [
+        "saisuosi",
+        "sss"
+      ]
+    },
+    "赛诺": {
+      "pinyin": "sainuo",
+      "initials": "sn",
+      "aliases": [
+        "sainuo",
+        "sn"
+      ]
+    },
+    "辛焱": {
+      "pinyin": "xinyan",
+      "initials": "xy",
+      "aliases": [
+        "xinyan",
+        "xy"
+      ]
+    },
+    "达达利亚": {
+      "pinyin": "dadaliya",
+      "initials": "ddly",
+      "aliases": [
+        "dadaliya",
+        "ddly"
+      ]
+    },
+    "迪卢克": {
+      "pinyin": "diluke",
+      "initials": "dlk",
+      "aliases": [
+        "diluke",
+        "dlk"
+      ]
+    },
+    "迪奥娜": {
+      "pinyin": "diaona",
+      "initials": "dan",
+      "aliases": [
+        "diaona",
+        "dan"
+      ]
+    },
+    "迪希雅": {
+      "pinyin": "dixiya",
+      "initials": "dxy",
+      "aliases": [
+        "dixiya",
+        "dxy"
+      ]
+    },
+    "那维莱特": {
+      "pinyin": "naweilaite",
+      "initials": "nwlt",
+      "aliases": [
+        "naweilaite",
+        "nwlt"
+      ]
+    },
+    "重云": {
+      "pinyin": "zhongyun",
+      "initials": "zy",
+      "aliases": [
+        "zhongyun",
+        "zy",
+        "chongyun",
+        "cy"
+      ]
+    },
+    "钟离": {
+      "pinyin": "zhongli",
+      "initials": "zl",
+      "aliases": [
+        "zhongli",
+        "zl"
+      ]
+    },
+    "闲云": {
+      "pinyin": "xianyun",
+      "initials": "xy",
+      "aliases": [
+        "xianyun",
+        "xy"
+      ]
+    },
+    "阿罗夏": {
+      "pinyin": "aluoxia",
+      "initials": "alx",
+      "aliases": [
+        "aluoxia",
+        "alx"
+      ]
+    },
+    "阿蕾奇诺": {
+      "pinyin": "aleiqinuo",
+      "initials": "alqn",
+      "aliases": [
+        "aleiqinuo",
+        "alqn"
+      ]
+    },
+    "阿贝多": {
+      "pinyin": "abeiduo",
+      "initials": "abd",
+      "aliases": [
+        "abeiduo",
+        "abd"
+      ]
+    },
+    "雅珂达": {
+      "pinyin": "yakeda",
+      "initials": "ykd",
+      "aliases": [
+        "yakeda",
+        "ykd"
+      ]
+    },
+    "雷泽": {
+      "pinyin": "leize",
+      "initials": "lz",
+      "aliases": [
+        "leize",
+        "lz"
+      ]
+    },
+    "雷电将军": {
+      "pinyin": "leidianjiangjun",
+      "initials": "ldjj",
+      "aliases": [
+        "leidianjiangjun",
+        "ldjj"
+      ]
+    },
+    "香菱": {
+      "pinyin": "xiangling",
+      "initials": "xl",
+      "aliases": [
+        "xiangling",
+        "xl"
+      ]
+    },
+    "魈": {
+      "pinyin": "xiao",
+      "initials": "x",
+      "aliases": [
+        "xiao",
+        "x"
+      ]
+    },
+    "鹿野院平藏": {
+      "pinyin": "luyeyuanpingcang",
+      "initials": "lyypc",
+      "aliases": [
+        "luyeyuanpingcang",
+        "lyypc"
+      ]
+    }
+  }
+}

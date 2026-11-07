@@ -1,0 +1,245 @@
+{
+  "source": "Actual BGI 0.6.2 identity captures, 2026-10-26; UID omitted",
+  "frames": [
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90／90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90/90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90/90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90/90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90/90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel-focused",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90/90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel-focused",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90./90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel-focused",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    },
+    {
+      "page": "overview",
+      "identity": {
+        "displayName": "乌玛",
+        "element": "",
+        "level": 90,
+        "levelText": "等级90/90",
+        "panelName": "乌玛",
+        "panelCandidate": "乌玛",
+        "headerName": "拉乌玛",
+        "attributeEvidence": true,
+        "source": "right-panel-focused",
+        "verified": false,
+        "header": "草元素/拉乌玛",
+        "headerNormalized": "草元素/拉乌玛",
+        "conflicts": true,
+        "candidates": [
+          {
+            "name": "拉乌玛",
+            "source": "header",
+            "element": "草"
+          },
+          {
+            "name": "乌玛",
+            "source": "panel"
+          }
+        ],
+        "rejectionReason": "左右姓名不一致"
+      }
+    }
+  ]
+}

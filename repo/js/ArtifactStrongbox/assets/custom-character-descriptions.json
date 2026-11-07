@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "source": "https://github.com/yoimiya-kokomi/miao-plugin/tree/master/resources/meta-gs/character",
+  "descriptions": {
+    "wanderer": "身份成谜的流浪人士。衣着打扮像是修验者，言行却并不是修验者应有的模样。",
+    "mannequin": "笔名「欧科塔维亚」的魔女托付给你和派蒙的人偶，善于探索「千星奇域」中封存的奥秘。",
+    "traveler": "从世界之外漂流而来的旅行者，被神带走血亲，自此踏上寻找七神之路。"
+  }
+}

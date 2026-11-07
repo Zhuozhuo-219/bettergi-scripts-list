@@ -1,0 +1,330 @@
+{
+  "source": "Actual RapidOCR experiment, 2026-10-26; not BGI engine benchmark; public regression copy: identifiers replaced, original images excluded",
+  "file": "reference-images/自定义名称-旅行者冰.png",
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "methods": [
+    {
+      "method": "original",
+      "results": [
+        {
+          "field": "header",
+          "text": "冰元素/ 示例",
+          "editDistance": 0,
+          "expectedLength": 5,
+          "preprocessMs": 0.001,
+          "ocrMs": 1922.7
+        },
+        {
+          "field": "characterName",
+          "text": "示例",
+          "editDistance": 0,
+          "expectedLength": 2,
+          "preprocessMs": 0.001,
+          "ocrMs": 2643.2
+        },
+        {
+          "field": "biography",
+          "text": "从世界之外漂流而来的旅行者，被神带走血亲，自此踏上寻找七神之路。",
+          "editDistance": 0,
+          "expectedLength": 29,
+          "preprocessMs": 0.001,
+          "ocrMs": 1938.1
+        }
+      ],
+      "items": [
+        {
+          "text": "冰元素/ 示例",
+          "x": 137.0,
+          "y": 30.0,
+          "width": 159.0,
+          "height": 35.0,
+          "confidence": 0.8839416333607265,
+          "ocrField": "header"
+        },
+        {
+          "text": "属性",
+          "x": 151.0,
+          "y": 133.0,
+          "width": 82.0,
+          "height": 41.0,
+          "confidence": 0.9995281398296356,
+          "ocrField": "menu"
+        },
+        {
+          "text": "武器",
+          "x": 142.0,
+          "y": 206.0,
+          "width": 67.0,
+          "height": 34.0,
+          "confidence": 0.998529464006424,
+          "ocrField": "menu"
+        },
+        {
+          "text": "圣遗物",
+          "x": 144.0,
+          "y": 277.0,
+          "width": 96.0,
+          "height": 32.0,
+          "confidence": 0.9973602890968323,
+          "ocrField": "menu"
+        },
+        {
+          "text": "示例",
+          "x": 1460.0,
+          "y": 125.0,
+          "width": 82.0,
+          "height": 48.0,
+          "confidence": 0.9997554421424866,
+          "ocrField": "characterName"
+        },
+        {
+          "text": "等级90/90",
+          "x": 1465.0,
+          "y": 206.0,
+          "width": 170.0,
+          "height": 38.0,
+          "confidence": 0.9930547305515834,
+          "ocrField": "characterLevel"
+        },
+        {
+          "text": "从世界之外漂流而来的旅行者，被神",
+          "x": 1465.0,
+          "y": 600.0,
+          "width": 328.0,
+          "height": 21.0,
+          "confidence": 0.9934925958514214,
+          "ocrField": "biography"
+        },
+        {
+          "text": "带走血亲，自此踏上寻找七神之路。",
+          "x": 1465.0,
+          "y": 627.0,
+          "width": 315.0,
+          "height": 20.0,
+          "confidence": 0.9805384203791618,
+          "ocrField": "biography"
+        },
+        {
+          "text": "UID:123456789",
+          "x": 1698.0,
+          "y": 1049.0,
+          "width": 168.0,
+          "height": 29.0,
+          "confidence": 0.9836977078364446,
+          "ocrField": "uid"
+        }
+      ]
+    },
+    {
+      "method": "clahe",
+      "results": [
+        {
+          "field": "header",
+          "text": "冰元素/ 示例",
+          "editDistance": 0,
+          "expectedLength": 5,
+          "preprocessMs": 10.507,
+          "ocrMs": 1070.0
+        },
+        {
+          "field": "characterName",
+          "text": "示例",
+          "editDistance": 0,
+          "expectedLength": 2,
+          "preprocessMs": 0.237,
+          "ocrMs": 1101.3
+        },
+        {
+          "field": "biography",
+          "text": "从世界之外漂流而来的旅行者，被神带走血亲，自此踏上寻找七神之路。",
+          "editDistance": 0,
+          "expectedLength": 29,
+          "preprocessMs": 0.729,
+          "ocrMs": 1236.3
+        }
+      ],
+      "items": [
+        {
+          "text": "冰元素/ 示例",
+          "x": 136.0,
+          "y": 29.0,
+          "width": 161.0,
+          "height": 37.0,
+          "confidence": 0.9073247143200466,
+          "ocrField": "header"
+        },
+        {
+          "text": "示例",
+          "x": 1460.0,
+          "y": 125.0,
+          "width": 82.0,
+          "height": 48.0,
+          "confidence": 0.999395340681076,
+          "ocrField": "characterName"
+        },
+        {
+          "text": "从世界之外漂流而来的旅行者，被神",
+          "x": 1465.0,
+          "y": 600.0,
+          "width": 329.0,
+          "height": 22.0,
+          "confidence": 0.9952496364712715,
+          "ocrField": "biography"
+        },
+        {
+          "text": "带走血亲，自此踏上寻找七神之路。",
+          "x": 1465.0,
+          "y": 626.0,
+          "width": 314.0,
+          "height": 22.0,
+          "confidence": 0.9766094423830509,
+          "ocrField": "biography"
+        }
+      ]
+    },
+    {
+      "method": "scale2",
+      "results": [
+        {
+          "field": "header",
+          "text": "冰元素/ 示例",
+          "editDistance": 0,
+          "expectedLength": 5,
+          "preprocessMs": 14.124,
+          "ocrMs": 873.3
+        },
+        {
+          "field": "characterName",
+          "text": "示例",
+          "editDistance": 0,
+          "expectedLength": 2,
+          "preprocessMs": 0.405,
+          "ocrMs": 1114.7
+        },
+        {
+          "field": "biography",
+          "text": "从世界之外漂流而来的旅行者，被神带走血亲，自此踏上寻找七神之路。",
+          "editDistance": 0,
+          "expectedLength": 29,
+          "preprocessMs": 0.708,
+          "ocrMs": 1383.5
+        }
+      ],
+      "items": [
+        {
+          "text": "冰元素/ 示例",
+          "x": 137.0,
+          "y": 30.0,
+          "width": 159.0,
+          "height": 35.0,
+          "confidence": 0.9311122979436602,
+          "ocrField": "header"
+        },
+        {
+          "text": "示例",
+          "x": 1461.0,
+          "y": 126.0,
+          "width": 80.5,
+          "height": 47.0,
+          "confidence": 0.9996971786022186,
+          "ocrField": "characterName"
+        },
+        {
+          "text": "从世界之外漂流而来的旅行者，被神",
+          "x": 1465.5,
+          "y": 600.0,
+          "width": 328.0,
+          "height": 21.5,
+          "confidence": 0.9964683167636395,
+          "ocrField": "biography"
+        },
+        {
+          "text": "带走血亲，自此踏上寻找七神之路。",
+          "x": 1465.0,
+          "y": 627.0,
+          "width": 314.5,
+          "height": 20.5,
+          "confidence": 0.9790937714278698,
+          "ocrField": "biography"
+        }
+      ]
+    },
+    {
+      "method": "otsu",
+      "results": [
+        {
+          "field": "header",
+          "text": "冰元素/示例",
+          "editDistance": 0,
+          "expectedLength": 5,
+          "preprocessMs": 10.482,
+          "ocrMs": 1045.2
+        },
+        {
+          "field": "characterName",
+          "text": "示例",
+          "editDistance": 0,
+          "expectedLength": 2,
+          "preprocessMs": 0.073,
+          "ocrMs": 1060.5
+        },
+        {
+          "field": "biography",
+          "text": "从世界之外漂流而来的旅行者，被神带走血亲。自自此踏上寻找七神之路",
+          "editDistance": 1,
+          "expectedLength": 29,
+          "preprocessMs": 0.133,
+          "ocrMs": 1408.1
+        }
+      ],
+      "items": [
+        {
+          "text": "冰元素/示例",
+          "x": 134.0,
+          "y": 22.0,
+          "width": 166.0,
+          "height": 46.0,
+          "confidence": 0.9165150920550028,
+          "ocrField": "header"
+        },
+        {
+          "text": "示例",
+          "x": 1460.0,
+          "y": 126.0,
+          "width": 82.0,
+          "height": 47.0,
+          "confidence": 0.9999629855155945,
+          "ocrField": "characterName"
+        },
+        {
+          "text": "从世界之外漂流而来的旅行者，被神",
+          "x": 1465.0,
+          "y": 600.0,
+          "width": 328.0,
+          "height": 22.0,
+          "confidence": 0.9911361187696457,
+          "ocrField": "biography"
+        },
+        {
+          "text": "带走血亲。自",
+          "x": 1464.0,
+          "y": 624.0,
+          "width": 108.0,
+          "height": 24.0,
+          "confidence": 0.8184127807617188,
+          "ocrField": "biography"
+        },
+        {
+          "text": "自此踏上寻找七神之路",
+          "x": 1564.0,
+          "y": 628.0,
+          "width": 210.0,
+          "height": 19.0,
+          "confidence": 0.9448366940021515,
+          "ocrField": "biography"
+        }
+      ]
+    }
+  ],
+  "redacted": true
+}

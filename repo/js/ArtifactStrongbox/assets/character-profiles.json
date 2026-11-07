@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "description": "默认自动查询本地评分库。profiles 可追加命名的手工流派条件；不自动识别账号资料。",
+  "profiles": []
+}

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>圣遗物三合一素材判断</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+    body { color: #f7f1df; font: 17px/1.5 "Microsoft YaHei", sans-serif; pointer-events: none; }
+    #stage { position: absolute; width: 1920px; height: 1080px; transform-origin: top left; }
+    #region { position: absolute; border: 2px solid rgba(231, 202, 132, .72); }
+    .panel { position: absolute; left: 1500px; top: 30px; width: 390px; padding: 16px 20px;
+      max-height: 1020px; overflow-y: auto; pointer-events: auto;
+      border: 1.5px solid rgba(231, 202, 132, .72); border-radius: 24px;
+      background: linear-gradient(145deg, rgba(38, 42, 55, .94), rgba(21, 24, 33, .92));
+      box-shadow: 0 21px 57px rgba(0, 0, 0, .42), inset 0 1.5px rgba(255, 255, 255, .08); }
+    h1, h2, p { margin: 0; }
+    .header { text-align: center; position: sticky; top: -16px; z-index: 2; background: #252936; padding: 8px 0 12px; }
+    .eyebrow { display: none; }
+    h1 { color: #ead8a5; font-size: 24px; font-weight: 700; letter-spacing: 3px; }
+    .decision-block { padding: 10px 0; text-align: center; }
+    #decision { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .summary-count { padding: 5px; border-radius: 8px; font-size: 12px; }
+    .summary-count strong { display: block; font-size: 25px; line-height: 1.25; font-variant-numeric: tabular-nums; }
+    .summary-count[data-status="fodder"] { color: #ffb4b4; background: #512d3666; border: 1px solid #ef909077; }
+    .summary-count[data-status="unknown"] { color: #ffe1a3; background: #4c412b66; border: 1px solid #ebc47777; }
+    .summary-count[data-status="keep"] { color: #a4f3c5; background: #224b3b66; border: 1px solid #79d5a377; }
+    #summary-scope { margin-top: 5px; font-size: 11px; color: #aeb7c9; }
+    #reason { display: none; }
+    .muted { color: #aeb7c9; font-size: 14px; }
+    .artifact-heading { padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, .12); }
+    h2 { color: #ead8a5; font-size: 20px; font-weight: 700; overflow-wrap: anywhere; }
+    #name.leveled { color: #ff9292; }
+    #level-warning { margin-top: 6px; color: #ff9292; font-size: 13px; }
+    #meta { margin-top: 5px; }
+    .stats { padding: 6px; border: 1px solid rgba(234, 216, 165, .22); border-radius: 10px;
+      background: rgba(255, 255, 255, .035); }
+    .stats-title { margin-bottom: 6px; color: #aeb7c9; font-size: 13px; text-align: center; }
+    .stat-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px;
+      align-items: center; padding: 2px 6px; border-radius: 6px; font-size: 15px; line-height: 1.4; }
+    .stat-row:nth-child(odd) { background: rgba(255, 255, 255, .03); }
+    .stat-row.main-stat { margin-bottom: 6px; padding: 4px 6px; color: #fff2ba; font-size: 17px; font-weight: 700; }
+    .stat-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .stat-left { display: flex; align-items: center; gap: 5px; min-width: 0; }
+    .roll-badge { flex: 0 0 auto; border-radius: 999px; padding: 1px 5px; font-size: 11px;
+      color: #ead8a5; background: rgba(234, 216, 165, .14); white-space: nowrap; }
+    .stat-value { color: #ead8a5; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #subs { display: grid; gap: 2px; }
+    .stat-row.pending .stat-name, .stat-row.pending .stat-value { color: #aeb7c9; }
+    .stat-row.unknown .stat-value { color: #d9bd87; }
+    .activation { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255, 255, 255, .12); }
+    #initial-count { padding: 3px 10px; border: 1px solid rgba(231, 202, 132, .45);
+      border-radius: 999px; color: #ead8a5; font-size: 13px; white-space: nowrap; }
+    #fourth-detail { font-size: 13px; text-align: right; }
+    #enhancement { margin-top: 9px; font-size: 13px; }
+    .projection { margin-top: 12px; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 10px; }
+    .projection-title { color: #ead8a5; font-size: 17px; text-align: center; font-weight: 700; }
+    #projection-status { margin: 5px 0 7px; font-size: 12px; text-align: center; }
+    .score-grid { display: grid; grid-template-columns: minmax(0, 1fr) 64px 64px; gap: 5px; align-items: center; }
+    #projection-head { padding: 4px 5px; color: #aeb7c9; font-size: 11px; }
+    #projection-head span:not(:first-child), .score-number { text-align: right; font-variant-numeric: tabular-nums; }
+    .projection-row { padding: 4px 5px; border-radius: 6px; }
+    .projection-row[data-assessment="keep"] { border-left: 3px solid #79d5a3; }
+    .projection-row[data-assessment="fodder"] { border-left: 3px solid #ef9090; }
+    .projection-row[data-assessment="unknown"] { border-left: 3px solid #ebc477; }
+    .projection-row:nth-child(odd) { background: rgba(255, 255, 255, .03); }
+    .character-name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .identity-cell { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .assessment-badge { flex: 0 0 auto; padding: 1px 6px; border-radius: 5px; font-size: 12px; font-weight: 700; }
+    .assessment-badge[data-status="keep"] { background: #224b3b; color: #a4f3c5; border: 1px solid #79d5a3; }
+    .assessment-badge[data-status="fodder"] { background: #512d36; color: #ffb4b4; border: 1px solid #ef9090; }
+    .assessment-badge[data-status="unknown"] { background: #4c412b; color: #ffe1a3; border: 1px solid #ebc477; }
+    .assessment-detail { margin: 3px 5px; color: #c5cfdd; font-size: 12px; line-height: 1.5; }
+    .policy-note { color: #aeb7c9; font-size: 12px; }
+    .policy-note summary { font-size: 12px; }
+    .policy-note p { margin-top: 6px; }
+    .score-number { color: #ead8a5; font-size: 15px; }
+    #projection-note { margin-top: 6px; color: #8e99ad; font-size: 11px; line-height: 1.4; }
+    #projection-list { max-height: 260px; overflow-y: auto; overscroll-behavior: contain; }
+    .sources { margin: 2px 5px 0; color: #a9bace; font-size: 11px; }
+    .controls { margin: 12px 0 8px; padding: 10px 0; border-top: 1px solid #ffffff20; border-bottom: 1px solid #ffffff20; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 13px; }
+    .set-limit-option { flex-basis: 100%; color: #ead8a5; }
+    #set-limit-note { margin-top: 6px; color: #ffcf91; font-size: 12px; }
+    input[type=checkbox] { accent-color: #e6c78b; vertical-align: middle; cursor: pointer; }
+    summary { color: #ead8a5; cursor: pointer; font-size: 14px; margin-top: 8px; }
+    input[type=search] { width: 100%; margin: 8px 0; padding: 7px 9px; color: #eef1f7; background: #ffffff09; border: 1px solid #ffffff30; border-radius: 6px; }
+    #character-picker { position: absolute; left: 480px; top: 95px; width: 970px; padding: 26px; border: 1.5px solid #e7ca84bb;
+      border-radius: 22px; background: linear-gradient(145deg, #272c3bfc, #181d2afa); box-shadow: 0 20px 75px #0009; pointer-events: auto; }
+    .picker-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    #character-picker input[type=search] { font: inherit; padding: 12px; margin: 16px 0 12px; }
+    #element-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+    #element-tabs button { font-size: 14px; padding: 7px 13px; }
+    #element-tabs button.active { color: #202633; background: #e6c78b; }
+    #character-list { height: 530px; overflow-y: auto; overscroll-behavior: contain; padding-right: 6px; }
+    .element-title { color: #ead8a5; font-size: 17px; margin: 14px 0 10px; padding-bottom: 7px; border-bottom: 1px solid #ffffff18; }
+    .character-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+    .character-choice { display: block; padding: 12px 9px; border: 1px solid #ffffff12; border-radius: 8px; background: #ffffff08;
+      font-size: 16px; overflow-wrap: anywhere; cursor: pointer; }
+    .character-choice:has(:checked) { border-color: #e6c78b99; background: #e6c78b18; }
+    #character-picker input[type=checkbox] { width: 16px; height: 16px; margin-right: 7px; }
+    #character-summary { width: 100%; margin-top: 10px; font-size: 14px; padding: 9px; }
+    .no-rule { color: #c8a781; font-size: 10px; display: block; margin-left: 22px; }
+    button { padding: 5px 10px; border: 1px solid #e6c78b55; border-radius: 6px; background: #e6c78b12; color: #ead8a5; cursor: pointer; }
+    .control-line { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 6px; font-size: 11px; color: #aeb7c9; }
+    .hotkey-callout { display: flex; align-items: center; gap: 12px; margin-top: 13px; padding: 11px; border: 1px solid #e9c779;
+      border-radius: 10px; background: #e6c78b22; text-align: left; box-shadow: 0 0 16px #e6c78b12; }
+    kbd { padding: 4px 11px; border: 1px solid #fff1c4; border-bottom-width: 3px; border-radius: 7px; background: #f0d79f; color: #282633;
+      font: 700 23px/1.2 "Microsoft YaHei", sans-serif; }
+    #interaction-hint { font-size: 15px; color: #fff0c4; font-weight: 700; }
+    #character-picker .control-line { margin-top: 16px; font-size: 14px; }
+    #control-error { color: #ffaaaa; font-size: 12px; margin-top: 5px; }
+    #capacity { margin-top: 8px; padding: 6px 8px; border-radius: 6px; background: #ffffff09; color: #b6c6dc; font-size: 12px; }
+    #capacity[data-level="high"] { color: #ffd393; border: 1px solid #dba565; }
+    #capacity[data-level="tight"] { color: #ead6a7; }
+    #capacity[data-level="relaxed"] { color: #a9d8bc; }
+    ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: #e6c78b55; border-radius: 4px; }
+    #warnings { margin-top: 12px; color: #d99898; font-size: 13px; }
+    .footer { margin-top: 10px; color: #8e99ad; font-size: 11px; text-align: center; }
+    .empty { padding: 30px 10px 16px; color: #aeb7c9; text-align: center; font-size: 17px; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<div id="stage">
+  <div id="region" hidden></div>
+  <main class="panel">
+    <header class="header">
+      <p class="eyebrow">还圣奥迹</p>
+      <h1>圣遗物素材判断</h1>
+      <div class="hotkey-callout"><kbd>F7</kbd><span id="interaction-hint">开启交互 · 选角色 / 滚动</span></div>
+    </header>
+    <section class="controls">
+      <div class="filters">
+        <label class="set-limit-option" title="关闭后不检查是否拆散现有套装，只比较属性评分；不代表实际换装收益"><input id="respect-sets" type="checkbox" checked>受现有套装限制</label>
+        <label><input id="show-set" type="checkbox" checked>适配套装角色</label>
+        <label><input id="show-training" type="checkbox" checked>用户培养角色</label>
+        <label title="仅沙／杯／冠，匹配使用率严格高于15%的推荐主词条"><input id="match-main" type="checkbox">主词条适配（>15%）</label>
+      </div>
+      <p id="set-limit-note" hidden>已忽略现有套装组合，仅作属性评分对比</p>
+      <button id="character-summary" type="button">选择拟培养角色 · 按元素分类</button>
+      <div class="control-line"><span id="account"></span><button id="return-game" type="button" hidden>返回游戏 · F7</button></div>
+      <p id="capacity">容量未填写 · 总量不会自动更新</p>
+      <p id="control-error" hidden></p>
+    </section>
+    <p id="waiting" class="empty">请打开素材选择界面<br>并选中一件圣遗物</p>
+    <section id="result" hidden>
+      <div class="decision-block">
+        <div id="decision" aria-label="逐角色判断计数">
+          <div class="summary-count" data-status="fodder">舍弃<strong id="count-fodder">—</strong></div>
+          <div class="summary-count" data-status="unknown">待定<strong id="count-unknown">—</strong></div>
+          <div class="summary-count" data-status="keep">保留<strong id="count-keep">—</strong></div>
+        </div>
+        <p id="summary-scope">按本次分析角色统计，非整件最终结论</p>
+        <p id="reason" class="muted"></p>
+      </div>
+      <div class="artifact-heading">
+        <h2 id="name"></h2>
+        <p id="meta" class="muted"></p>
+        <p id="level-warning" hidden></p>
+      </div>
+      <div class="stats">
+        <div class="stats-title">识别词条</div>
+        <div id="main" class="stat-row main-stat"></div>
+        <div id="subs"></div>
+      </div>
+      <div class="activation">
+        <span id="initial-count">词条状态待确认</span>
+        <span id="fourth-detail" class="muted"></span>
+      </div>
+      <p id="enhancement" class="muted"></p>
+      <p id="warnings" hidden></p>
+      <section class="projection">
+        <div class="projection-title">+20 分位 · 逐角色取舍</div>
+        <p id="projection-status" class="muted">正在准备预测…</p>
+        <div id="projection-head" class="score-grid" hidden>
+          <span>角色 / 分支</span><span>前20%</span><span>前80%</span>
+        </div>
+        <div id="projection-list"></div>
+        <p id="projection-note"></p>
+        <details class="policy-note"><summary>颜色判据 · 仅本角色当前用途</summary>
+          <p>先确认现装、主词条及套装完整性。保留：三模型下，提升至少半档核心词条的概率下界均≥80%；舍弃：超过现装的概率上界均≤1%；其余待定。概率界包含模拟误差，不代表真实伤害或已校准后验。</p>
+          <p>沙／杯／冠仅考虑使用率>15%的推荐主词条；可靠不匹配直接对该角色判舍弃，推荐缺项待定。两个推荐主词条不同时，可计价的主属性须计入双方总分；跨主词条舍弃还须确认至少半档的显著劣势，不能只比副词条。</p>
+          <p>非0级素材、未满级现装、拆套装、缺数据均需复核。四词条和四档增量等概率；容量仅为静态压力提示，不自动扣减，不因满仓改变颜色。</p>
+          <p>关闭“受现有套装限制”后，可跳过拆套装检查，并只要求同部位现装可靠。主词条规则、非0级保护和评分校验仍有效；结果未计入拆套装损失。</p>
+        </details>
+      </section>
+    </section>
+    <p class="footer">使用 BetterGI 停止脚本快捷键结束</p>
+  </main>
+  <aside id="character-picker" hidden>
+    <div class="picker-heading"><div><h2>选择拟培养角色</h2><p class="muted">按元素分类 · 可搜索中文、全拼或首字母</p></div>
+      <button id="close-character-picker" type="button">完成选择</button></div>
+    <input id="character-search" type="search" placeholder="例如：纳西妲 / naxida / nxd">
+    <div id="element-tabs"></div>
+    <div id="character-list"></div>
+    <div class="control-line"><span id="selection-count"></span><button id="clear-selection" type="button">清空选择</button></div>
+  </aside>
+</div>
+<script>
+  const byId = id => document.getElementById(id)
+  const ELEMENTS = ['火', '水', '风', '雷', '草', '冰', '岩', '其他']
+  let catalog = [], selected = new Set(), controlsRevision = null, projectionKey = '', activeElement = '全部'
+  const normalizeSearch = value => String(value || '').normalize('NFKC').toLowerCase().replace(/ü/g, 'v')
+    .normalize('NFD').replace(/[\u0300-\u036f\s'’·・（）()_-]/g, '')
+  const matchesSearch = (row, query) => !query || [row.name, ...(row.searchKeys || [])].some(key => normalizeSearch(key).includes(query))
+  const post = (url, data = {}) => window.chrome?.webview?.postMessage(JSON.stringify({ url, data }))
+  function selectionCount() {
+    byId('selection-count').textContent = '已选 ' + selected.size + ' 位 · 选择自动保存'
+    byId('character-summary').textContent = '选择拟培养角色 · 已选 ' + selected.size + ' / ' + catalog.length
+  }
+  function sendFilters() {
+    selectionCount()
+    byId('set-limit-note').hidden = byId('respect-sets').checked
+    post('/strongbox/filter', { characters: [...selected], flags: {
+      showSetCharacters: byId('show-set').checked, showTrainingCharacters: byId('show-training').checked,
+      matchMainStat: byId('match-main').checked, respectExistingSets: byId('respect-sets').checked } })
+  }
+  function renderCatalog() {
+    const area = byId('character-list'), top = area.scrollTop
+    const query = normalizeSearch(byId('character-search').value)
+    byId('element-tabs').replaceChildren(...['全部', ...ELEMENTS.filter(element => catalog.some(row => (row.element || '其他') === element))].map(element => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = activeElement === element ? 'active' : ''
+      button.textContent = element === '全部' ? '全部元素' : element
+      button.onclick = () => { activeElement = element; area.scrollTop = 0; renderCatalog() }
+      return button
+    }))
+    const sections = []
+    for (const element of ELEMENTS) {
+      if (activeElement !== '全部' && activeElement !== element) continue
+      const rows = catalog.filter(row => (ELEMENTS.includes(row.element) ? row.element : '其他') === element && matchesSearch(row, query))
+      if (!rows.length) continue
+      const section = document.createElement('section'), title = document.createElement('p'), grid = document.createElement('div')
+      title.className = 'element-title'; title.textContent = element + '元素 · ' + rows.length
+      grid.className = 'character-grid'
+      grid.replaceChildren(...rows.map(row => {
+        const label = document.createElement('label'), box = document.createElement('input'), name = document.createElement('span')
+        label.className = 'character-choice'; box.type = 'checkbox'; box.checked = selected.has(row.name)
+        name.textContent = row.name
+        box.onchange = () => { box.checked ? selected.add(row.name) : selected.delete(row.name); sendFilters() }
+        label.replaceChildren(box, name)
+        if (!row.profileIds.length) { const note = document.createElement('span'); note.className = 'no-rule'; note.textContent = '暂无评分规则'; label.append(note) }
+        return label
+      }))
+      section.replaceChildren(title, grid); sections.push(section)
+    }
+    area.replaceChildren(...sections); area.scrollTop = top
+    if (!catalog.length) area.textContent = '请先运行角色仓库录入'
+    else if (!sections.length) area.textContent = '没有匹配角色，请调整搜索词或元素筛选'
+    selectionCount()
+  }
+  function renderInteraction(interactive) {
+    byId('interaction-hint').textContent = interactive ? '交互中 · 再按 F7 返回游戏' : '开启交互 · 选角色 / 滚动'
+    if (!interactive) byId('character-picker').hidden = true
+    byId('return-game').hidden = !interactive
+  }
+  function renderControls(controls) {
+    if (!controls) return
+    renderInteraction(controls.interactive)
+    byId('account').textContent = '账号：' + controls.accountId
+    const capacity = controls.capacity
+    byId('capacity').dataset.level = capacity?.level || 'unknown'
+    byId('capacity').textContent = capacity?.estimatedCount !== null && capacity?.estimatedCount !== undefined
+      ? '估计 ' + capacity.estimatedCount + ' / ' + capacity.capacity + ' · ' + capacity.label + ' · 静态估计'
+      : '容量未填写 · 可在JS设置填写总量估计'
+    byId('capacity').title = capacity?.note || '不自动统计或扣减圣遗物数量'
+    byId('control-error').textContent = controls.error || ''
+    byId('control-error').hidden = !controls.error
+    if (controlsRevision === controls.revision) return
+    controlsRevision = controls.revision; catalog = controls.catalog; selected = new Set(controls.selected)
+    byId('show-set').checked = controls.flags.showSetCharacters
+    byId('show-training').checked = controls.flags.showTrainingCharacters
+    byId('match-main').checked = controls.flags.matchMainStat
+    byId('respect-sets').checked = controls.flags.respectExistingSets !== false
+    byId('set-limit-note').hidden = byId('respect-sets').checked
+    renderCatalog()
+  }
+  for (const id of ['show-set', 'show-training', 'match-main', 'respect-sets']) byId(id).onchange = sendFilters
+  byId('character-search').oninput = () => { activeElement = '全部'; renderCatalog() }
+  byId('character-summary').onclick = () => { byId('character-picker').hidden = !byId('character-picker').hidden }
+  byId('close-character-picker').onclick = () => { byId('character-picker').hidden = true }
+  byId('clear-selection').onclick = () => { selected.clear(); renderCatalog(); sendFilters() }
+  byId('return-game').onclick = () => { byId('character-picker').hidden = true; post('/strongbox/game') }
+  function fitStage() {
+    // 按视口映射 1080P 游戏坐标，同时适配 WebView2 的 DPI 缩放。
+    const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080)
+    byId('stage').style.transform = 'scale(' + scale + ')'
+  }
+  fitStage()
+  window.addEventListener('resize', fitStage)
+
+  function fillStatRow(row, stat, main = false) {
+    const name = document.createElement('span')
+    name.className = 'stat-name'
+    name.textContent = stat?.name || '未识别'
+    const value = document.createElement('span')
+    value.className = 'stat-value'
+    value.textContent = stat ? (main ? '' : '+') + stat.value + (stat.percent ? '%' : '') : '—'
+    if (stat?.activation === 'pending') value.textContent += ' 待激活'
+    if (stat?.activation === 'unknown') value.textContent += ' 待确认'
+    const left = document.createElement('span')
+    left.className = 'stat-left'
+    const estimate = stat?.rollEstimate
+    if (!main && estimate?.upgradeCount > 0) {
+      const badge = document.createElement('span')
+      badge.className = 'roll-badge'
+      badge.textContent = '≈' + estimate.upgradeCount + '次'
+      badge.title = '不含初始值的强化命中次数估算' + (estimate.ambiguous ? '；显示取整可能对应多种次数' : '')
+      left.replaceChildren(name, badge)
+    } else left.replaceChildren(name)
+    row.replaceChildren(left, value)
+  }
+
+  function renderProjection(projection) {
+    const key = JSON.stringify(projection)
+    if (key === projectionKey) return
+    projectionKey = key
+    const scrollTop = byId('projection-list').scrollTop
+    byId('projection-list').replaceChildren()
+    byId('projection-head').hidden = true
+    byId('projection-note').textContent = ''
+    if (!projection || projection.state === 'computing') {
+      byId('projection-status').textContent = '正在模拟强化并查询角色规则…'
+      return
+    }
+    if (projection.state !== 'ready') {
+      byId('projection-status').textContent = projection.message || '识别信息需核对，暂不预测'
+      return
+    }
+    const counts = projection.counts
+    byId('projection-status').textContent = 'N=' + projection.sampleCount + ' · ' + (projection.candidateCharacters ?? projection.simulatedProfiles) + ' 位角色' +
+      (counts ? ' · 套装 ' + counts.set + ' / 培养 ' + counts.training + ' / 主词条 ' + counts.main : '')
+    byId('projection-head').hidden = false
+    byId('projection-list').replaceChildren(...projection.rows.map(result => {
+      const block = document.createElement('div')
+      block.className = 'projection-row'
+      const assessment = result.assessment || { status: 'unknown', label: '待定', reason: '本角色现装比较尚未完成' }
+      block.dataset.assessment = assessment.status
+      const line = document.createElement('div')
+      line.className = 'score-grid'
+      const identity = document.createElement('span')
+      identity.className = 'character-name'
+      identity.textContent = result.name + (result.label === '通用' ? '' : '·' + result.label)
+      identity.title = result.ruleTitle
+      const identityCell = document.createElement('div'), badge = document.createElement('span')
+      identityCell.className = 'identity-cell'; badge.className = 'assessment-badge'
+      badge.dataset.status = assessment.status; badge.textContent = assessment.label
+      badge.title = assessment.reason
+      identityCell.replaceChildren(identity, badge)
+      const numbers = ['top20', 'top80'].map(key => {
+        const number = document.createElement('span')
+        number.className = 'score-number'
+        number.textContent = result.scoreUnavailable ? '—' : Number(result[key]).toFixed(1)
+        return number
+      })
+      line.replaceChildren(identityCell, ...numbers)
+      const sources = document.createElement('p')
+      sources.className = 'sources'
+      sources.textContent = [result.setMatch && (result.setMatch.count === 4 ? '四件套 ' : '两件套 ') + result.setMatch.usageRate + '%',
+        result.training && '用户培养', result.mainMatch && '主词条 ' + result.mainMatch.usageRate + '%', result.scoreUnavailable && '缺少评分规则'].filter(Boolean).join(' · ')
+      const detail = document.createElement('p'); detail.className = 'assessment-detail'
+      const percent = (value, upper = false) => ((upper ? Math.ceil(value * 1000) : Math.floor(value * 1000)) / 10).toFixed(1) + '%'
+      const priority = result.selectedForTraining || result.training ? '培养目标' : result.setMatch ? '套装用途' : '散件用途'
+      detail.textContent = priority + '：' + (assessment.status === 'keep' && assessment.bounds
+        ? '有意义提升概率下界 ' + percent(assessment.bounds.minimumMeaningful)
+        : assessment.status === 'fodder' && assessment.bounds ? '超过现装概率上界 ' + percent(assessment.bounds.maximumImprove, true)
+        : assessment.reason) + (assessment.models?.length && assessment.mainChanged ? '（主＋副）' : '') +
+        (assessment.respectExistingSets === false && assessment.brokenSets?.length ? ' · 已忽略拆套装' : '')
+      detail.title = assessment.reason + (assessment.baselineObservedAt ? '\n基准记录时间：' + assessment.baselineObservedAt : '') +
+        (assessment.respectExistingSets === false ? '\n忽略现有套装组合；未计入套装效果损失。' : '') +
+        (assessment.mainPolicy?.accepted?.length ? '\n>15%主词条：' + assessment.mainPolicy.accepted.map(row => row.name + (row.percent ? '%' : '') + ' ' + row.usageRate + '%').join('、') : '') +
+        (assessment.models?.length ? '\n有意义提升：至少0.5个最高档核心词条单位。\n' + assessment.models.map(model => model.label +
+        '：提升 ' + (model.pImprove * 100).toFixed(1) + '%，有意义提升 ' + (model.pMeaningful * 100).toFixed(1) + '%').join('\n') : '')
+      block.replaceChildren(line, sources, detail)
+      return block
+    }))
+    byId('projection-list').scrollTop = scrollTop
+    byId('projection-note').textContent = '分位列沿用原评分；标签按推荐秩及原规则核验，仅针对本角色。基准为已录入现装，换装后需更新录入。' +
+      (projection.fixedActivation?.length ? '第四条按已读数值激活，不重抽。' : '') +
+      (projection.skipped?.length ? '另有 ' + projection.skipped.length + ' 条规则暂未计算。' : '')
+  }
+
+  function renderAssessmentSummary(projection) {
+    const summary = projection?.assessmentSummary
+    for (const status of ['fodder', 'unknown', 'keep']) byId('count-' + status).textContent = summary ? String(summary[status]) : '—'
+    byId('summary-scope').textContent = summary ? summary.total ? '已分析 ' + summary.total + ' 位角色' +
+      (projection.respectExistingSets === false ? ' · 忽略套装' : '') + ' · 非整件最终结论' : '本次无分析角色'
+      : projection?.state === 'computing' ? '正在分析角色用途…' : '等待有效分析结果'
+    byId('summary-scope').title = '按角色去重：任一分支保留计保留；否则有待定或未完成分支计待定；全部舍弃才计舍弃。仅统计已开启来源。'
+  }
+
+  function render(data) {
+    renderControls(data.controls)
+    const ready = data.state === 'ready' && data.artifact && data.decision
+    renderAssessmentSummary(ready ? data.projection : null)
+    byId('waiting').hidden = Boolean(ready)
+    byId('waiting').textContent = data.message || '请打开素材选择界面并选中一件圣遗物'
+    byId('result').hidden = !ready
+    byId('region').hidden = !data.showRegion
+    if (data.region) {
+      const [x, y, w, h] = data.region
+      Object.assign(byId('region').style, {
+        left: (x - 2) + 'px', top: (y - 2) + 'px', width: (w + 4) + 'px', height: (h + 4) + 'px'
+      })
+    }
+    // 全部动态内容作为纯文本写入。
+    if (!ready) {
+      projectionKey = ''
+      for (const id of ['name', 'meta', 'reason', 'warnings', 'initial-count', 'fourth-detail', 'level-warning', 'enhancement']) byId(id).textContent = ''
+      byId('name').className = ''
+      byId('level-warning').hidden = true
+      byId('main').replaceChildren()
+      byId('subs').replaceChildren()
+      byId('warnings').hidden = true
+      byId('projection-list').replaceChildren()
+      byId('projection-head').hidden = true
+      byId('projection-status').textContent = ''
+      byId('projection-note').textContent = ''
+      return
+    }
+    const artifact = data.artifact
+    byId('reason').textContent = data.decision.reasons.join('；')
+    byId('name').textContent = artifact.name || '名称未识别'
+    const leveled = Number.isInteger(artifact.level) && artifact.level !== 0
+    byId('name').className = leveled ? 'leveled' : ''
+    byId('level-warning').textContent = leveled ? '已强化 +' + artifact.level + '，请留意素材选择' : ''
+    byId('level-warning').hidden = !leveled
+    byId('meta').textContent = [artifact.slot, artifact.setName, artifact.level === null ? '等级未知' : '+' + artifact.level].filter(Boolean).join(' · ')
+    fillStatRow(byId('main'), artifact.mainStat, true)
+    byId('subs').replaceChildren(...artifact.subStats.map(stat => {
+      const row = document.createElement('div')
+      row.className = 'stat-row ' + (stat.activation || 'unknown')
+      fillStatRow(row, stat)
+      return row
+    }))
+    byId('initial-count').textContent = artifact.fourthSubStat?.label || '词条状态待确认'
+    byId('fourth-detail').textContent = artifact.fourthSubStat?.detail || '第 4 条是否生效尚未确认'
+    const progress = artifact.enhancement
+    byId('enhancement').textContent = !progress ? '等级需核对，暂不估算剩余强化次数'
+      : !progress.consistent ? '剩余 ' + progress.remainingNodeCount + ' 个节点，词条状态需核对'
+      : progress.remainingNodeCount === 0 ? '已满级 · 无剩余强化次数'
+      : '剩余 ' + progress.remainingNodeCount + ' 个节点 · ' +
+        (progress.remainingActivationCount ? '先激活第 4 条，再增量 ' : '数值增量 ') + progress.remainingUpgradeCount + ' 次'
+    byId('warnings').textContent = artifact.warnings.join('；')
+    byId('warnings').hidden = artifact.warnings.length === 0
+    renderProjection(data.projection)
+  }
+
+  if (window.htmlMask) {
+    window.htmlMask.onMessage = message => {
+      let data = message.data?.data || message.data
+      if (typeof data === 'string') data = JSON.parse(data)
+      if (message.url === '/interaction') { renderInteraction(data?.interactive); return }
+      if (message.url !== '/artifact') return
+      if (data) render(data)
+    }
+  }
+</script>
+</body>
+</html>

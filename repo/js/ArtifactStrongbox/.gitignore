@@ -1,0 +1,21 @@
+# 本地账号、培养名单、日志和迁移备份
+/data/*
+!/data/accounts/
+/data/accounts/*
+!/data/accounts/README.md
+
+# 本地参考画面和生成预览：公开前单独脱敏审阅
+/reference-images/
+/tools/previews/
+
+# 构建和开发环境
+/dist/
+/release-staging/
+/node_modules/
+__pycache__/
+*.pyc
+.venv/
+
+# 父仓库忽略 js 下的 txt；本许可文件必须随源码保留。
+!/utils/vendor/LICENSE-miao.txt
+/.fork-deployment.json

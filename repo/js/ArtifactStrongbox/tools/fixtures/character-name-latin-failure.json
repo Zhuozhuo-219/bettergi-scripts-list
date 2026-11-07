@@ -1,0 +1,481 @@
+{
+  "source": "BGI 0.7.1 actual identity.unresolved, 2026-10-27; UID removed",
+  "identities": [
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情。 Q： 生命值上限 22,199",
+      "source": "right-panel",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    },
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情 生命值上限 22,199",
+      "source": "right-panel",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    },
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情。 生命值上限 22,199",
+      "source": "right-panel",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    },
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情。 Q 生命值上限 22,199",
+      "source": "right-panel",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    },
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情。 生命值上限 22,199",
+      "source": "right-panel-focused",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    },
+    {
+      "displayName": "七七",
+      "element": "冰",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "七七",
+      "panelCandidate": "七七",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情。 生命值上限 22,199",
+      "source": "right-panel-focused",
+      "verified": true,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": false,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "七七",
+          "source": "panel",
+          "element": "冰"
+        }
+      ],
+      "rejectionReason": "",
+      "rawDisplayName": "七七",
+      "rawNames": {
+        "header": "七七",
+        "panel": "七七",
+        "display": "七七"
+      },
+      "aliases": [
+        "七七"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        }
+      }
+    },
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色苍白如纸的不死之人。话很少，也 没有什么表情。 生命值上限 22,199",
+      "source": "right-panel-focused",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    },
+    {
+      "displayName": "tt",
+      "element": "",
+      "level": 90,
+      "levelText": "等级90/90",
+      "panelName": "tt",
+      "panelCandidate": "tt",
+      "headerName": "七七",
+      "attributeEvidence": true,
+      "rosterEvidence": true,
+      "description": "药庐「不卜庐」的采药姑娘兼学徒，面 色茶白 如纸的不死之人。话很少，也 没有 情。 生命值上限 22,199",
+      "source": "right-panel-focused",
+      "verified": false,
+      "header": "冰元素/七七",
+      "headerNormalized": "冰元素/七七",
+      "conflicts": true,
+      "candidates": [
+        {
+          "name": "七七",
+          "source": "header",
+          "element": "冰"
+        },
+        {
+          "name": "tt",
+          "source": "panel"
+        }
+      ],
+      "rejectionReason": "字典匹配后左右身份仍不一致",
+      "rawDisplayName": "tt",
+      "rawNames": {
+        "header": "七七",
+        "panel": "tt",
+        "display": "tt"
+      },
+      "aliases": [
+        "七七",
+        "tt"
+      ],
+      "kind": "regular",
+      "nameNormalization": {
+        "method": "dictionary",
+        "header": {
+          "raw": "七七",
+          "name": "七七",
+          "element": "冰",
+          "kind": "regular",
+          "id": 10000035,
+          "distance": 0,
+          "cost": 0,
+          "method": "exact"
+        },
+        "panel": {
+          "raw": "tt",
+          "name": "tt",
+          "method": "unmatched",
+          "candidates": []
+        }
+      }
+    }
+  ]
+}

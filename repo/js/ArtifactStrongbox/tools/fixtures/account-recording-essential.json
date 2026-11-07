@@ -1,0 +1,635 @@
+{
+  "source": {
+    "recording": "BetterGI_GCM_202610251522113457.json",
+    "sha256": "fcf59949bf0fcabc7394f2f75e8a6ca6b98235c5d75447d8c98202613edec4fa",
+    "recordedRounds": 4,
+    "recordedActionCount": 44
+  },
+  "info": {
+    "name": "",
+    "description": "",
+    "x": 0,
+    "y": 0,
+    "width": 1920,
+    "height": 1080,
+    "recordDpi": 1
+  },
+  "macroEvents": [
+    {
+      "type": 0,
+      "keyCode": 67,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 692.8332
+    },
+    {
+      "type": 1,
+      "keyCode": 67,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 812.8301
+    },
+    {
+      "type": 4,
+      "mouseX": 215,
+      "mouseY": 164,
+      "mouseButton": "Left",
+      "time": 2767.8394
+    },
+    {
+      "type": 5,
+      "mouseX": 215,
+      "mouseY": 163,
+      "mouseButton": "Left",
+      "time": 2855.9267
+    },
+    {
+      "type": 4,
+      "mouseX": 196,
+      "mouseY": 289,
+      "mouseButton": "Left",
+      "time": 4386.8182
+    },
+    {
+      "type": 5,
+      "mouseX": 196,
+      "mouseY": 289,
+      "mouseButton": "Left",
+      "time": 4469.8508
+    },
+    {
+      "type": 0,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 5812.8299
+    },
+    {
+      "type": 1,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 5948.8164
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 8580.8653
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 8724.8606
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 10404.8864
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 10572.8308
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 12284.887
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 12420.8546
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 13796.8517
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 13956.8891
+    },
+    {
+      "type": 4,
+      "mouseX": 1527,
+      "mouseY": 54,
+      "mouseButton": "Left",
+      "time": 16231.9393
+    },
+    {
+      "type": 5,
+      "mouseX": 1527,
+      "mouseY": 54,
+      "mouseButton": "Left",
+      "time": 16328.0307
+    },
+    {
+      "type": 4,
+      "mouseX": 1527,
+      "mouseY": 54,
+      "mouseButton": "Left",
+      "time": 18780.8884
+    },
+    {
+      "type": 5,
+      "mouseX": 1527,
+      "mouseY": 54,
+      "mouseButton": "Left",
+      "time": 18861.8457
+    },
+    {
+      "type": 0,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 20860.8612
+    },
+    {
+      "type": 1,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 20980.8468
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 23348.8343
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 23516.8377
+    },
+    {
+      "type": 4,
+      "mouseX": 197,
+      "mouseY": 147,
+      "mouseButton": "Left",
+      "time": 24692.8192
+    },
+    {
+      "type": 5,
+      "mouseX": 197,
+      "mouseY": 147,
+      "mouseButton": "Left",
+      "time": 24794.8544
+    },
+    {
+      "type": 4,
+      "mouseX": 200,
+      "mouseY": 305,
+      "mouseButton": "Left",
+      "time": 27436.9406
+    },
+    {
+      "type": 5,
+      "mouseX": 200,
+      "mouseY": 305,
+      "mouseButton": "Left",
+      "time": 27523.1665
+    },
+    {
+      "type": 0,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 29596.9693
+    },
+    {
+      "type": 1,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 29724.8718
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 30972.877
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 31116.8459
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 32093.0624
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 32220.8651
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 33156.8714
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 33316.8476
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 34332.9392
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 34452.8668
+    },
+    {
+      "type": 4,
+      "mouseX": 1535,
+      "mouseY": 35,
+      "mouseButton": "Left",
+      "time": 36063.9052
+    },
+    {
+      "type": 5,
+      "mouseX": 1534,
+      "mouseY": 35,
+      "mouseButton": "Left",
+      "time": 36162.0199
+    },
+    {
+      "type": 4,
+      "mouseX": 1516,
+      "mouseY": 42,
+      "mouseButton": "Left",
+      "time": 38933.8463
+    },
+    {
+      "type": 5,
+      "mouseX": 1516,
+      "mouseY": 42,
+      "mouseButton": "Left",
+      "time": 39057.8691
+    },
+    {
+      "type": 0,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 40492.8718
+    },
+    {
+      "type": 1,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 40604.9473
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 42020.9221
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 42172.8858
+    },
+    {
+      "type": 4,
+      "mouseX": 225,
+      "mouseY": 157,
+      "mouseButton": "Left",
+      "time": 43586.8748
+    },
+    {
+      "type": 5,
+      "mouseX": 225,
+      "mouseY": 157,
+      "mouseButton": "Left",
+      "time": 43698.8471
+    },
+    {
+      "type": 4,
+      "mouseX": 227,
+      "mouseY": 293,
+      "mouseButton": "Left",
+      "time": 45912.8915
+    },
+    {
+      "type": 5,
+      "mouseX": 227,
+      "mouseY": 293,
+      "mouseButton": "Left",
+      "time": 46015.9048
+    },
+    {
+      "type": 0,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 47516.9494
+    },
+    {
+      "type": 1,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 47604.8539
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 48836.9186
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 48996.9288
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 49748.9765
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 49884.856
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 50812.8787
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 50981.9342
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 51836.9997
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 51988.9411
+    },
+    {
+      "type": 4,
+      "mouseX": 1538,
+      "mouseY": 46,
+      "mouseButton": "Left",
+      "time": 54119.867
+    },
+    {
+      "type": 5,
+      "mouseX": 1538,
+      "mouseY": 46,
+      "mouseButton": "Left",
+      "time": 54233.8529
+    },
+    {
+      "type": 4,
+      "mouseX": 1538,
+      "mouseY": 46,
+      "mouseButton": "Left",
+      "time": 57019.5958
+    },
+    {
+      "type": 5,
+      "mouseX": 1538,
+      "mouseY": 46,
+      "mouseButton": "Left",
+      "time": 57132.8654
+    },
+    {
+      "type": 0,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 57900.8955
+    },
+    {
+      "type": 1,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 58036.869
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 58932.9011
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 59068.8555
+    },
+    {
+      "type": 4,
+      "mouseX": 144,
+      "mouseY": 151,
+      "mouseButton": "Left",
+      "time": 61006.8164
+    },
+    {
+      "type": 5,
+      "mouseX": 144,
+      "mouseY": 151,
+      "mouseButton": "Left",
+      "time": 61120.303
+    },
+    {
+      "type": 4,
+      "mouseX": 196,
+      "mouseY": 283,
+      "mouseButton": "Left",
+      "time": 63190.8927
+    },
+    {
+      "type": 5,
+      "mouseX": 196,
+      "mouseY": 283,
+      "mouseButton": "Left",
+      "time": 63294.8621
+    },
+    {
+      "type": 0,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 65044.8677
+    },
+    {
+      "type": 1,
+      "keyCode": 70,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 65196.9382
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 66612.8927
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 66748.8701
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 67740.9338
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 67884.8951
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 68596.8797
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 68748.875
+    },
+    {
+      "type": 0,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 69548.8736
+    },
+    {
+      "type": 1,
+      "keyCode": 69,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 69693.0372
+    },
+    {
+      "type": 4,
+      "mouseX": 1483,
+      "mouseY": 53,
+      "mouseButton": "Left",
+      "time": 71155.088
+    },
+    {
+      "type": 5,
+      "mouseX": 1483,
+      "mouseY": 53,
+      "mouseButton": "Left",
+      "time": 71263.0106
+    },
+    {
+      "type": 4,
+      "mouseX": 1482,
+      "mouseY": 53,
+      "mouseButton": "Left",
+      "time": 73560.9289
+    },
+    {
+      "type": 5,
+      "mouseX": 1482,
+      "mouseY": 53,
+      "mouseButton": "Left",
+      "time": 73662.0411
+    },
+    {
+      "type": 0,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 75676.907
+    },
+    {
+      "type": 1,
+      "keyCode": 27,
+      "mouseX": 0,
+      "mouseY": 0,
+      "time": 75804.9135
+    }
+  ]
+}

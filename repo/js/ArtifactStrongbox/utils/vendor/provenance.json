@@ -1,0 +1,17 @@
+{
+  "sourceRepository": "https://github.com/yoimiya-kokomi/miao-plugin",
+  "sourceBranch": "master",
+  "sourceCommit": null,
+  "localSource": "ArtifactScore/utils/artis-score-standalone.js",
+  "localSourceSha256": "d51a516ab52b4aebddaa700e0cd38eef9acafcb00d1427b792046446400c8c23",
+  "copiedAt": "2026-10-25",
+  "characterCount": 121,
+  "license": "MIT (miao-plugin)",
+  "note": "Local generated snapshot including ArtifactScore local overrides; upstream commit not recorded. Appended single-piece adapter and null-safe Noelle lookup documented in README.",
+  "vendoredSha256": "7bab6a4deca74c800fd008785014a788c3a95252a248f8c99f94318bb62e15f8",
+  "modifications": [
+    "Export getAttrWeight/buildAttrs/getMaxMark/getMark/baseAttrMap for the single-piece adapter",
+    "Make Noelle missing-Goblet lookups null-safe; keep original formula and branch conditions"
+  ],
+  "upstreamLicenseUrl": "https://github.com/yoimiya-kokomi/miao-plugin/blob/master/LICENSE"
+}

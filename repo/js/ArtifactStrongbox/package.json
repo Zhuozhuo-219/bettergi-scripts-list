@@ -1,0 +1,7 @@
+{
+  "name": "artifact-strongbox",
+  "version": "0.9.3",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node tools/verify-all.mjs" }
+}

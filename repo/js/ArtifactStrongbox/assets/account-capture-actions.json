@@ -1,0 +1,445 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "recording": "BetterGI_GCM_202610251522113457.json",
+    "sha256": "fcf59949bf0fcabc7394f2f75e8a6ca6b98235c5d75447d8c98202613edec4fa",
+    "recordedRounds": 4,
+    "recordedActionCount": 44
+  },
+  "minimumActionIntervalMs": 600,
+  "description": "每个key/click为一次完整短按/点击；动作后默认等待600毫秒，稳定帧间隔120毫秒，不将down/up之间拉成长按。实际执行加入页面验证并循环到起始角色。",
+  "slots": [
+    "生之花",
+    "死之羽",
+    "时之沙",
+    "空之杯",
+    "理之冠"
+  ],
+  "buttons": {
+    "attributes": [
+      215,
+      164
+    ],
+    "artifacts": [
+      196,
+      289
+    ],
+    "recommendation": [
+      1527,
+      54
+    ]
+  },
+  "slotButtons": [
+    [
+      90,
+      48
+    ],
+    [
+      201,
+      48
+    ],
+    [
+      312,
+      48
+    ],
+    [
+      422,
+      48
+    ],
+    [
+      533,
+      48
+    ]
+  ],
+  "recommendationIconButtons": [
+    [
+      [
+        925,
+        125
+      ],
+      [
+        1065,
+        125
+      ]
+    ],
+    [
+      [
+        925,
+        225
+      ],
+      [
+        1062,
+        225
+      ]
+    ],
+    [
+      [
+        925,
+        325
+      ],
+      [
+        1065,
+        325
+      ]
+    ]
+  ],
+  "recommendationIconButtonsSource": "user-provided-2026-10-25",
+  "recordedActions": [
+    {
+      "type": "key",
+      "key": "C",
+      "originalTimeMs": 692.8332,
+      "originalHoldMs": 120,
+      "atMs": 600
+    },
+    {
+      "type": "click",
+      "point": [
+        215,
+        164
+      ],
+      "originalTimeMs": 2767.8394,
+      "originalHoldMs": 88,
+      "atMs": 1200
+    },
+    {
+      "type": "click",
+      "point": [
+        196,
+        289
+      ],
+      "originalTimeMs": 4386.8182,
+      "originalHoldMs": 83,
+      "atMs": 1800
+    },
+    {
+      "type": "key",
+      "key": "F",
+      "originalTimeMs": 5812.8299,
+      "originalHoldMs": 136,
+      "atMs": 2400
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 8580.8653,
+      "originalHoldMs": 144,
+      "atMs": 3000
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 10404.8864,
+      "originalHoldMs": 168,
+      "atMs": 3600
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 12284.887,
+      "originalHoldMs": 136,
+      "atMs": 4200
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 13796.8517,
+      "originalHoldMs": 160,
+      "atMs": 4800
+    },
+    {
+      "type": "click",
+      "point": [
+        1527,
+        54
+      ],
+      "originalTimeMs": 16231.9393,
+      "originalHoldMs": 96,
+      "atMs": 5400
+    },
+    {
+      "type": "click",
+      "point": [
+        1527,
+        54
+      ],
+      "originalTimeMs": 18780.8884,
+      "originalHoldMs": 81,
+      "atMs": 6000
+    },
+    {
+      "type": "key",
+      "key": "VK_ESCAPE",
+      "originalTimeMs": 20860.8612,
+      "originalHoldMs": 120,
+      "atMs": 6600
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 23348.8343,
+      "originalHoldMs": 168,
+      "atMs": 7200
+    },
+    {
+      "type": "click",
+      "point": [
+        197,
+        147
+      ],
+      "originalTimeMs": 24692.8192,
+      "originalHoldMs": 102,
+      "atMs": 7800
+    },
+    {
+      "type": "click",
+      "point": [
+        200,
+        305
+      ],
+      "originalTimeMs": 27436.9406,
+      "originalHoldMs": 86,
+      "atMs": 8400
+    },
+    {
+      "type": "key",
+      "key": "F",
+      "originalTimeMs": 29596.9693,
+      "originalHoldMs": 128,
+      "atMs": 9000
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 30972.877,
+      "originalHoldMs": 144,
+      "atMs": 9600
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 32093.0624,
+      "originalHoldMs": 128,
+      "atMs": 10200
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 33156.8714,
+      "originalHoldMs": 160,
+      "atMs": 10800
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 34332.9392,
+      "originalHoldMs": 120,
+      "atMs": 11400
+    },
+    {
+      "type": "click",
+      "point": [
+        1535,
+        35
+      ],
+      "originalTimeMs": 36063.9052,
+      "originalHoldMs": 98,
+      "atMs": 12000
+    },
+    {
+      "type": "click",
+      "point": [
+        1516,
+        42
+      ],
+      "originalTimeMs": 38933.8463,
+      "originalHoldMs": 124,
+      "atMs": 12600
+    },
+    {
+      "type": "key",
+      "key": "VK_ESCAPE",
+      "originalTimeMs": 40492.8718,
+      "originalHoldMs": 112,
+      "atMs": 13200
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 42020.9221,
+      "originalHoldMs": 152,
+      "atMs": 13800
+    },
+    {
+      "type": "click",
+      "point": [
+        225,
+        157
+      ],
+      "originalTimeMs": 43586.8748,
+      "originalHoldMs": 112,
+      "atMs": 14400
+    },
+    {
+      "type": "click",
+      "point": [
+        227,
+        293
+      ],
+      "originalTimeMs": 45912.8915,
+      "originalHoldMs": 103,
+      "atMs": 15000
+    },
+    {
+      "type": "key",
+      "key": "F",
+      "originalTimeMs": 47516.9494,
+      "originalHoldMs": 88,
+      "atMs": 15600
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 48836.9186,
+      "originalHoldMs": 160,
+      "atMs": 16200
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 49748.9765,
+      "originalHoldMs": 136,
+      "atMs": 16800
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 50812.8787,
+      "originalHoldMs": 169,
+      "atMs": 17400
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 51836.9997,
+      "originalHoldMs": 152,
+      "atMs": 18000
+    },
+    {
+      "type": "click",
+      "point": [
+        1538,
+        46
+      ],
+      "originalTimeMs": 54119.867,
+      "originalHoldMs": 114,
+      "atMs": 18600
+    },
+    {
+      "type": "click",
+      "point": [
+        1538,
+        46
+      ],
+      "originalTimeMs": 57019.5958,
+      "originalHoldMs": 113,
+      "atMs": 19200
+    },
+    {
+      "type": "key",
+      "key": "VK_ESCAPE",
+      "originalTimeMs": 57900.8955,
+      "originalHoldMs": 136,
+      "atMs": 19800
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 58932.9011,
+      "originalHoldMs": 136,
+      "atMs": 20400
+    },
+    {
+      "type": "click",
+      "point": [
+        144,
+        151
+      ],
+      "originalTimeMs": 61006.8164,
+      "originalHoldMs": 113,
+      "atMs": 21000
+    },
+    {
+      "type": "click",
+      "point": [
+        196,
+        283
+      ],
+      "originalTimeMs": 63190.8927,
+      "originalHoldMs": 104,
+      "atMs": 21600
+    },
+    {
+      "type": "key",
+      "key": "F",
+      "originalTimeMs": 65044.8677,
+      "originalHoldMs": 152,
+      "atMs": 22200
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 66612.8927,
+      "originalHoldMs": 136,
+      "atMs": 22800
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 67740.9338,
+      "originalHoldMs": 144,
+      "atMs": 23400
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 68596.8797,
+      "originalHoldMs": 152,
+      "atMs": 24000
+    },
+    {
+      "type": "key",
+      "key": "E",
+      "originalTimeMs": 69548.8736,
+      "originalHoldMs": 144,
+      "atMs": 24600
+    },
+    {
+      "type": "click",
+      "point": [
+        1483,
+        53
+      ],
+      "originalTimeMs": 71155.088,
+      "originalHoldMs": 108,
+      "atMs": 25200
+    },
+    {
+      "type": "click",
+      "point": [
+        1482,
+        53
+      ],
+      "originalTimeMs": 73560.9289,
+      "originalHoldMs": 101,
+      "atMs": 25800
+    },
+    {
+      "type": "key",
+      "key": "VK_ESCAPE",
+      "originalTimeMs": 75676.907,
+      "originalHoldMs": 128,
+      "atMs": 26400
+    }
+  ]
+}
