@@ -13,7 +13,7 @@ for (const [value, level] of [[0, 'relaxed'], [2159, 'relaxed'], [2160, 'tight']
   assert.equal(inventoryPressure(String(value)).level, level)
 }
 for (const bad of [-1, 2701, 'foo', '20.5', Infinity]) assert.throws(() => inventoryPressure(bad), /0～2700/)
-const recommendation = { status: 'ok', mainHeadingFound: true,
+const recommendation = { status: 'ok', mainHeadingFound: true, subHeadingFound: true,
   mainStats: [{ name: '生命值', percent: true, usageRate: 70, rank: 1 }, { name: '元素精通', percent: false, usageRate: 15, rank: 2 },
     { name: '水元素伤害加成', percent: true, usageRate: 10, rank: 3 }], subStats: [
   { name: '暴击伤害', percent: true, rank: 1 }, { name: '暴击率', percent: true, rank: 2 },
@@ -83,6 +83,8 @@ assert.equal(unrestricted.rows[0].top80, restricted.rows[0].top80, '切换只影
 assert.equal(switchService.cached(breaksSet, ids, { respectExistingSets: false }), unrestricted)
 assert.equal(switchService.cached(breaksSet, ids), null)
 assert.equal((await switchService.calculate(breaksSet, {}, ids)).rows[0].assessment.code, 'set-break', '重新勾选恢复限制')
+const initialFilter = await switchService.calculate(breaksSet, {}, ids, { excludeLowInitialStats: true, minInitialEffectiveStats: 3 })
+assert.equal(initialFilter.rows[0].assessment.code, 'initial-effective-below-threshold', '玩家初始词条阈值先于拆套装约束')
 const onlyCup = record(); delete onlyCup.slots.生之花
 assert.equal(replacementContext(good, onlyCup).code, 'equipment')
 const pureCup = replacementContext(good, onlyCup, { respectExistingSets: false })

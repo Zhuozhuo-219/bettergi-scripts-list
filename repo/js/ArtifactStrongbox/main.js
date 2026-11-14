@@ -84,7 +84,8 @@ function closeMask() {
       }
       const candidates = ready ? session.candidates(snapshot.artifact) : []
       const profileIds = [...new Set(candidates.flatMap(candidate => candidate.profileIds))]
-      const assessmentOptions = { respectExistingSets: session.controls().flags.respectExistingSets !== false }
+      const { respectExistingSets, excludeLowInitialStats, minInitialEffectiveStats } = session.controls().flags
+      const assessmentOptions = { respectExistingSets: respectExistingSets !== false, excludeLowInitialStats, minInitialEffectiveStats }
       const cachedProjection = ready ? projectionService.cached(snapshot.artifact, profileIds, assessmentOptions) : null
       const payload = {
         state: ready ? "ready" : "waiting",

@@ -44,6 +44,38 @@ export function mainRuleAssessment(artifact, record, fit = mainStatSuitability(a
     mainPolicy: fit, scope: "用户指定的主词条推荐范围排除，不表示提升概率为零" }
 }
 
+// 玩家手动初筛独立于评分分支和现装；只计+0时已激活、且命中该部位推荐的副词条种类。
+export function initialEffectiveStatPolicy(artifact, record, { excludeLowInitialStats = false, minInitialEffectiveStats = 2 } = {}) {
+  if (!excludeLowInitialStats) return null
+  const unresolved = reason => ({ state: "unknown", threshold: minInitialEffectiveStats, reason })
+  if (!Number.isInteger(minInitialEffectiveStats) || minInitialEffectiveStats < 0 || minInitialEffectiveStats > 4) return unresolved("初始有效词条阈值须为0～4整数")
+  if (artifact.level !== 0) return unresolved("仅对+0素材统计初始有效副词条")
+  if (artifact.warnings?.length) return unresolved("素材识别有警告，初始有效词条数需核对")
+  if (!record?.identity?.verified || record.identity.conflicts || record.needsRefresh) return unresolved("角色身份或元素资料需要复核")
+  try { prepareProjectionInput(artifact) } catch (error) { return unresolved(`素材数值需复核：${error.message}`) }
+  const rec = record.recommendations?.[artifact.slot]
+  if (rec?.status !== "ok" || rec.subHeadingFound !== true || !rec.subStats?.length) return unresolved("缺少本部位已确认的推荐追加词条")
+  const rows = [...rec.subStats].sort((a, b) => a.rank - b.rank), keys = rows.map(getSubStatKey)
+  if (keys.some(key => !KEYS.includes(key)) || new Set(keys).size !== keys.length || rows.some((row, i) =>
+    row.rank !== i + 1 || typeof row.percent !== "boolean" || row.percent !== (!keys[i].endsWith("Plus") && keys[i] !== "mastery"))) {
+    return unresolved("推荐追加词条的种类、单位或顺序需复核")
+  }
+  const active = artifact.subStats.filter(stat => stat.activation === "active")
+  if (![3, 4].includes(active.length) || artifact.subStats.some(stat => !["active", "pending"].includes(stat.activation))) return unresolved("初始词条激活状态需核对")
+  const effective = active.filter(stat => keys.includes(getSubStatKey(stat)))
+  return { state: "known", threshold: minInitialEffectiveStats, count: effective.length, activeCount: active.length,
+    names: effective.map(stat => stat.name + (stat.percent ? "%" : "")),
+    pendingEffectiveCount: artifact.subStats.filter(stat => stat.activation === "pending" && keys.includes(getSubStatKey(stat))).length,
+    source: "本部位推荐追加词条", reason: "只计已激活副词条，待激活第四条和主词条不计入" }
+}
+
+export function initialEffectiveRuleAssessment(policy) {
+  if (policy?.state !== "known" || policy.count >= policy.threshold) return null
+  return { status: "fodder", label: "舍弃", code: "initial-effective-below-threshold",
+    reason: `初始有效副词条 ${policy.count} < 阈值 ${policy.threshold}（玩家规则，待激活不计）`,
+    initialStats: policy, scope: "玩家手动初筛，仅本角色当前用途；不表示强化提升概率为零" }
+}
+
 export function inventoryPressure(value) {
   if (value === undefined || value === null || String(value).trim() === "") {
     return { estimatedCount: null, capacity: 2700, level: "unknown", label: "容量未填写", note: "可在JS设置填写总量估计；不自动计数" }
@@ -172,10 +204,13 @@ export function classifyImprovement(models, { mainChanged = false } = {}) {
   return unknown("overlap", "分布仍有重叠或模型结论不一致，保留待复核", { bounds })
 }
 
-export function assessCharacterArtifact({ artifact, input, samples, profile, record, respectExistingSets = true }) {
+export function assessCharacterArtifact({ artifact, input, samples, profile, record, respectExistingSets = true,
+  excludeLowInitialStats = false, minInitialEffectiveStats = 2 }) {
   if (artifact.level !== 0) return unknown("leveled", "非0级素材需人工确认，不自动按胚子判舍弃")
   if (artifact.warnings?.length) return unknown("artifact-ocr", "素材识别仍有警告，需核对后再判定")
   if (!record?.identity?.verified || record.identity.conflicts || record.needsRefresh) return unknown("identity", "角色身份或元素资料需要复核")
+  const initialRule = initialEffectiveRuleAssessment(initialEffectiveStatPolicy(artifact, record, { excludeLowInitialStats, minInitialEffectiveStats }))
+  if (initialRule) return initialRule
   const mainPolicy = mainStatSuitability(artifact, record)
   const rejected = mainRuleAssessment(artifact, record, mainPolicy)
   if (rejected) return rejected

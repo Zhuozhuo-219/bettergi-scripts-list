@@ -84,6 +84,13 @@
     .filters { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 13px; }
     .set-limit-option { flex-basis: 100%; color: #ead8a5; }
     #set-limit-note { margin-top: 6px; color: #ffcf91; font-size: 12px; }
+    .initial-filter-option { flex-basis: 100%; color: #ead8a5; }
+    #initial-stat-controls { margin-top: 8px; padding: 9px 10px; border: 1px solid #e6c78b55; border-radius: 8px; background: #e6c78b0a; }
+    .threshold-heading { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+    #initial-stat-value { color: #ffe1a3; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #initial-stat-threshold { width: 100%; margin: 7px 0 0; accent-color: #e6c78b; cursor: pointer; }
+    .threshold-scale { display: flex; justify-content: space-between; color: #aeb7c9; font-size: 11px; padding: 0 3px; }
+    #initial-stat-hint { margin-top: 5px; font-size: 12px; color: #c5cfdd; }
     input[type=checkbox] { accent-color: #e6c78b; vertical-align: middle; cursor: pointer; }
     summary { color: #ead8a5; cursor: pointer; font-size: 14px; margin-top: 8px; }
     input[type=search] { width: 100%; margin: 8px 0; padding: 7px 9px; color: #eef1f7; background: #ffffff09; border: 1px solid #ffffff30; border-radius: 6px; }
@@ -135,11 +142,18 @@
     <section class="controls">
       <div class="filters">
         <label class="set-limit-option" title="关闭后不检查是否拆散现有套装，只比较属性评分；不代表实际换装收益"><input id="respect-sets" type="checkbox" checked>受现有套装限制</label>
+        <label class="initial-filter-option" title="按每个角色的推荐追加词条，排除初始有效数低于阈值的+0素材"><input id="exclude-initial-stats" type="checkbox">排除初始有效词条数阈值</label>
         <label><input id="show-set" type="checkbox" checked>适配套装角色</label>
         <label><input id="show-training" type="checkbox" checked>用户培养角色</label>
         <label title="仅沙／杯／冠，匹配使用率严格高于15%的推荐主词条"><input id="match-main" type="checkbox">主词条适配（>15%）</label>
       </div>
       <p id="set-limit-note" hidden>已忽略现有套装组合，仅作属性评分对比</p>
+      <div id="initial-stat-controls" hidden>
+        <div class="threshold-heading"><label for="initial-stat-threshold">初始有效副词条数低于</label><output id="initial-stat-value" for="initial-stat-threshold">2</output></div>
+        <input id="initial-stat-threshold" type="range" min="0" max="4" step="1" value="2" aria-describedby="initial-stat-hint">
+        <div class="threshold-scale" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span></div>
+        <p id="initial-stat-hint">低于2条则对该角色判舍弃；只计+0已激活副词条，待激活不计。</p>
+      </div>
       <button id="character-summary" type="button">选择拟培养角色 · 按元素分类</button>
       <div class="control-line"><span id="account"></span><button id="return-game" type="button" hidden>返回游戏 · F7</button></div>
       <p id="capacity">容量未填写 · 总量不会自动更新</p>
@@ -185,6 +199,7 @@
           <p>沙／杯／冠仅考虑使用率>15%的推荐主词条；可靠不匹配直接对该角色判舍弃，推荐缺项待定。两个推荐主词条不同时，可计价的主属性须计入双方总分；跨主词条舍弃还须确认至少半档的显著劣势，不能只比副词条。</p>
           <p>非0级素材、未满级现装、拆套装、缺数据均需复核。四词条和四档增量等概率；容量仅为静态压力提示，不自动扣减，不因满仓改变颜色。</p>
           <p>关闭“受现有套装限制”后，可跳过拆套装检查，并只要求同部位现装可靠。主词条规则、非0级保护和评分校验仍有效；结果未计入拆套装损失。</p>
+          <p>开启初始有效词条阈值后，按该角色本部位推荐追加词条计数；+0已激活的有效副词条低于玩家设定值即判舍弃，先于套装及现装比较。待激活第四条不计，双爆分别计数，百分比与固定值分开。达到阈值沿用原判据，不能据此直接判保留；数据不完整不当作0条。</p>
         </details>
       </section>
     </section>
@@ -211,12 +226,23 @@
     byId('selection-count').textContent = '已选 ' + selected.size + ' 位 · 选择自动保存'
     byId('character-summary').textContent = '选择拟培养角色 · 已选 ' + selected.size + ' / ' + catalog.length
   }
+  function renderInitialStatControl() {
+    const enabled = byId('exclude-initial-stats').checked
+    const value = Number(byId('initial-stat-threshold').value)
+    byId('initial-stat-controls').hidden = !enabled
+    byId('initial-stat-threshold').disabled = !enabled
+    byId('initial-stat-value').textContent = String(value)
+    byId('initial-stat-hint').textContent = (value === 0 ? '阈值0不排除任何角色用途；' : '低于' + value + '条则对该角色判舍弃；') +
+      '只计+0已激活副词条，待激活不计。'
+  }
   function sendFilters() {
     selectionCount()
     byId('set-limit-note').hidden = byId('respect-sets').checked
+    renderInitialStatControl()
     post('/strongbox/filter', { characters: [...selected], flags: {
       showSetCharacters: byId('show-set').checked, showTrainingCharacters: byId('show-training').checked,
-      matchMainStat: byId('match-main').checked, respectExistingSets: byId('respect-sets').checked } })
+      matchMainStat: byId('match-main').checked, respectExistingSets: byId('respect-sets').checked,
+      excludeLowInitialStats: byId('exclude-initial-stats').checked, minInitialEffectiveStats: Number(byId('initial-stat-threshold').value) } })
   }
   function renderCatalog() {
     const area = byId('character-list'), top = area.scrollTop
@@ -275,9 +301,13 @@
     byId('match-main').checked = controls.flags.matchMainStat
     byId('respect-sets').checked = controls.flags.respectExistingSets !== false
     byId('set-limit-note').hidden = byId('respect-sets').checked
+    byId('exclude-initial-stats').checked = controls.flags.excludeLowInitialStats === true
+    byId('initial-stat-threshold').value = String(controls.flags.minInitialEffectiveStats ?? 2)
+    renderInitialStatControl()
     renderCatalog()
   }
-  for (const id of ['show-set', 'show-training', 'match-main', 'respect-sets']) byId(id).onchange = sendFilters
+  for (const id of ['show-set', 'show-training', 'match-main', 'respect-sets', 'exclude-initial-stats']) byId(id).onchange = sendFilters
+  byId('initial-stat-threshold').oninput = sendFilters
   byId('character-search').oninput = () => { activeElement = '全部'; renderCatalog() }
   byId('character-summary').onclick = () => { byId('character-picker').hidden = !byId('character-picker').hidden }
   byId('close-character-picker').onclick = () => { byId('character-picker').hidden = true }
@@ -367,8 +397,12 @@
         ? '有意义提升概率下界 ' + percent(assessment.bounds.minimumMeaningful)
         : assessment.status === 'fodder' && assessment.bounds ? '超过现装概率上界 ' + percent(assessment.bounds.maximumImprove, true)
         : assessment.reason) + (assessment.models?.length && assessment.mainChanged ? '（主＋副）' : '') +
-        (assessment.respectExistingSets === false && assessment.brokenSets?.length ? ' · 已忽略拆套装' : '')
+        (assessment.respectExistingSets === false && assessment.brokenSets?.length ? ' · 已忽略拆套装' : '') +
+        (result.initialStats ? result.initialStats.state === 'known' ? ' · 初始有效 ' + result.initialStats.count + '/' + result.initialStats.activeCount : ' · 初始有效数待核对' : '')
       detail.title = assessment.reason + (assessment.baselineObservedAt ? '\n基准记录时间：' + assessment.baselineObservedAt : '') +
+        (result.initialStats ? '\n初始有效阈值：' + result.initialStats.threshold + '；' + (result.initialStats.state === 'known'
+          ? '已激活有效：' + (result.initialStats.names.join('、') || '无') + '；待激活有效：' + result.initialStats.pendingEffectiveCount + '条（不计入）'
+          : result.initialStats.reason) : '') +
         (assessment.respectExistingSets === false ? '\n忽略现有套装组合；未计入套装效果损失。' : '') +
         (assessment.mainPolicy?.accepted?.length ? '\n>15%主词条：' + assessment.mainPolicy.accepted.map(row => row.name + (row.percent ? '%' : '') + ' ' + row.usageRate + '%').join('、') : '') +
         (assessment.models?.length ? '\n有意义提升：至少0.5个最高档核心词条单位。\n' + assessment.models.map(model => model.label +
@@ -386,7 +420,8 @@
     const summary = projection?.assessmentSummary
     for (const status of ['fodder', 'unknown', 'keep']) byId('count-' + status).textContent = summary ? String(summary[status]) : '—'
     byId('summary-scope').textContent = summary ? summary.total ? '已分析 ' + summary.total + ' 位角色' +
-      (projection.respectExistingSets === false ? ' · 忽略套装' : '') + ' · 非整件最终结论' : '本次无分析角色'
+      (projection.respectExistingSets === false ? ' · 忽略套装' : '') +
+      (projection.excludeLowInitialStats ? ' · 初筛<' + projection.minInitialEffectiveStats : '') + ' · 非整件最终结论' : '本次无分析角色'
       : projection?.state === 'computing' ? '正在分析角色用途…' : '等待有效分析结果'
     byId('summary-scope').title = '按角色去重：任一分支保留计保留；否则有待定或未完成分支计待定；全部舍弃才计舍弃。仅统计已开启来源。'
   }

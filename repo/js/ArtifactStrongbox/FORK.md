@@ -3,7 +3,7 @@
 源码位于 `repo/js/ArtifactStrongbox`，与自动钓鱼定制版共用 `custom/fishing-area-priority` 分支。
 该分支名称沿用最初的钓鱼功能，现可同时保存多个个人脚本；main 继续跟随官方。
 
-本次导入基于本机 0.9.3。main.js、utils、assets、运行设置及默认评分规则保持原样。
+初次导入基于本机0.9.3。后续功能在本仓库开发；当前0.9.4新增可选初始有效词条阈值，见README与CHANGELOG。
 运行目录仍为 `E:\BetterGI\User\JsScript\ArtifactStrongbox`。
 
 ## 源码与个人数据

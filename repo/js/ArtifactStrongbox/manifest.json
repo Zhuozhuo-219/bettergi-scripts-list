@@ -1,9 +1,9 @@
 {
   "manifest_version": 1,
   "name": "圣遗物三合一素材判断",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "bgi_version": "0.61.2",
-  "description": "按套装、培养名单和主词条匹配角色；保留套装约束下对照现装给出三色取舍标签，支持手动容量压力估计。",
+  "description": "按套装、培养名单和主词条匹配角色；对照现装给出三色标签，可选按初始有效副词条阈值排除，支持套装约束及容量提示。",
   "authors": [{ "name": "本地自定义" }],
   "settings_ui": "settings.json",
   "main": "main.js",

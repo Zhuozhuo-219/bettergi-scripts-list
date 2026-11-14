@@ -1,6 +1,6 @@
 # 开发维护说明
 
-当前实现：0.9.3。文档整理：2026-10-29。用户操作见 [README](../README.md)，发布范围见 [RELEASE](../RELEASE.md)。
+当前实现：0.9.4。更新：2026-11-08。用户操作见 [README](../README.md)，发布范围见 [RELEASE](../RELEASE.md)。初始有效词条阈值在评估模块和候选展示中统一应用，规则独立于旧评分分支，见 [阈值说明](initial-effective-stats.md)。
 
 ## 文件分工
 

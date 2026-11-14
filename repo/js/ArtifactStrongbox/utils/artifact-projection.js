@@ -100,7 +100,9 @@ export function createProjectionService(options = {}, customProfiles = [], chara
 
   function keyFor(artifact, profileIds = null, assessmentOptions = {}) {
     return artifactKey(artifact) + JSON.stringify({ profiles: Array.isArray(profileIds) ? [...new Set(profileIds)].sort() : null,
-      respectExistingSets: assessmentOptions.respectExistingSets !== false })
+      warnings: artifact.warnings || [], enhancementConsistent: artifact.enhancement?.consistent === true,
+      respectExistingSets: assessmentOptions.respectExistingSets !== false,
+      excludeLowInitialStats: assessmentOptions.excludeLowInitialStats === true, minInitialEffectiveStats: assessmentOptions.minInitialEffectiveStats ?? 2 })
   }
 
   return {
@@ -131,7 +133,8 @@ export function createProjectionService(options = {}, customProfiles = [], chara
           const scores = samples.map(values => scoreRound(scorer.score(values))).sort((a, b) => b - a)
           rows.push({ id: profile.id, name: profile.name, label: profile.label, ruleTitle: scorer.title,
             ...(characterRecords ? { assessment: assessCharacterArtifact({ artifact, input, samples, profile, record: characterRecords[profile.name],
-              respectExistingSets: assessmentOptions.respectExistingSets !== false }) } : {}),
+              respectExistingSets: assessmentOptions.respectExistingSets !== false,
+              excludeLowInitialStats: assessmentOptions.excludeLowInitialStats === true, minInitialEffectiveStats: assessmentOptions.minInitialEffectiveStats ?? 2 }) } : {}),
             top20: scores[Math.max(0, Math.ceil(scores.length * 0.2) - 1)],
             top80: scores[Math.max(0, Math.ceil(scores.length * 0.8) - 1)] })
         } catch (error) { skipped.push({ name: profile.name, message: error.message || String(error) }) }
@@ -143,6 +146,7 @@ export function createProjectionService(options = {}, customProfiles = [], chara
         state: rows.length ? "ready" : "blocked", message: rows.length ? "" : activeProfiles.length ? "当前没有可计算的角色规则" : "当前筛选条件没有可评分角色，可勾选培养角色或开启其他匹配来源",
         modelVersion: MODEL_VERSION, sampleCount: actualSampleCount, seed,
         respectExistingSets: assessmentOptions.respectExistingSets !== false,
+        excludeLowInitialStats: assessmentOptions.excludeLowInitialStats === true, minInitialEffectiveStats: assessmentOptions.minInitialEffectiveStats ?? 2,
         simulatedProfiles: rows.length, skipped, rows: options.returnAllRows ? rows : rows.slice(0, rowCount),
         selectedOnly: Array.isArray(options.selectedProfileIds),
         remainingUpgrades: input.remainingUpgrades, fixedActivation: input.activation,
