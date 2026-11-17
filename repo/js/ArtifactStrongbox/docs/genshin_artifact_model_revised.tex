@@ -1,0 +1,376 @@
+% !TeX program = xelatex
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,longtable,geometry,hyperref}
+\geometry{margin=24mm}
+\hypersetup{colorlinks=true,linkcolor=blue}
+\newcommand{\Ind}{\mathbf 1}
+\newcommand{\Law}{\mathcal L}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\Unif}{\operatorname{Unif}}
+\newcommand{\Bin}{\operatorname{Bin}}
+\newcommand{\pos}[1]{\left(#1\right)_+}
+\title{原神五星圣遗物强化与三合一决策：条件概率模型（修订版）}
+\author{数学建模笔记}
+\date{2026年11月17日}
+\begin{document}
+\maketitle
+\tableofcontents
+\clearpage
+\section{问题与观测假设}
+研究五星圣遗物，特别是\emph{已获得的初始三词条圣遗物}在第四副词条的\emph{类型及档位均已可观测}时的剩余强化不确定性。官方版本更新已支持第四副词条预览；本文额外将其\emph{初始档位也可观测}作为建模假设。对已获圣遗物，$+4$ 的第四词条激活是确定转移；对尚未获得的随机圣遗物，该词条仍有生成随机性。目标是同时建立强化的精确离散分布、在角色与配装条件下的总体分布，以及保留或投入三合一的决策函数。
+
+\section{类型空间与状态}
+令套装集合为 $\mathcal S$，部位集合为
+\[
+\mathcal P=\{\mathrm F,\mathrm P,\mathrm S,\mathrm G,\mathrm C\}.
+\]
+副词条类型集合为
+\[
+\mathcal T_A=\{\mathrm{HP},\mathrm{ATK},\mathrm{DEF},\mathrm{HP\%},\mathrm{ATK\%},\mathrm{DEF\%},\mathrm{EM},\mathrm{ER},\mathrm{CR},\mathrm{CD}\}.
+\]
+主词条的允许集合为
+\begin{align*}
+\mathcal T_{M,\mathrm F}&=\{\mathrm{HP}\},\\
+\mathcal T_{M,\mathrm P}&=\{\mathrm{ATK}\},\\
+\mathcal T_{M,\mathrm S}&=\{\mathrm{HP\%},\mathrm{ATK\%},\mathrm{DEF\%},\mathrm{EM},\mathrm{ER}\},\\
+\mathcal T_{M,\mathrm C}&=\{\mathrm{HP\%},\mathrm{ATK\%},\mathrm{DEF\%},\mathrm{EM},\mathrm{CR},\mathrm{CD},\mathrm{Heal}\},\\
+\mathcal T_{M,\mathrm G}&=\{\mathrm{HP\%},\mathrm{ATK\%},\mathrm{DEF\%},\mathrm{EM},\mathrm{PhysDMG}\}\cup\{\mathrm{DMG}_e:e\in\mathcal E\},
+\end{align*}
+其中 $\mathcal E=\{\mathrm{Pyro},\mathrm{Hydro},\mathrm{Cryo},\mathrm{Electro},\mathrm{Anemo},\mathrm{Geo},\mathrm{Dendro}\}$，故 $|\mathcal T_{M,\mathrm G}|=12$。
+合法副词条类型满足 $t_i\in\mathcal T_A\setminus\{t_M\}$，且 $t_i\neq t_j$（$i\neq j$）。注意元素与物理伤害加成不在副词条库中。
+
+记圣遗物的生成信息为
+\[
+\theta=(s,p,t_M,H,T,r^{(0)}),\qquad H\in\{3,4\},\quad T=(t_1,t_2,t_3,t_4),\quad r^{(0)}=(r_1^{(0)},\ldots,r_4^{(0)})\in D^4,
+\]
+其中 $D=\{0.7,0.8,0.9,1.0\}$，$H$ 是\emph{初始已激活}副词条的数量。即使 $H=3$，第四类型 $t_4$ 与档位 $r_4^{(0)}$ 在本模型中仍属于已观测信息；其数值在 $+4$ 才生效。若 $u_t$ 表示类型 $t$ 的一次满档数值，实际数值等于 $u_t$ 乘以对应归一化档位之和。用档位而非游戏显示的四舍五入数值运算，可避免累加误差。
+
+\section{强化过程}
+对 $g\in\{0,1,\ldots,20\}$，令
+\[
+h(g)=\lfloor g/4\rfloor,\qquad N_H(g)=h(g)-\Ind_{\{H=3\}}\Ind_{\{g\ge4\}}.
+\]
+定义激活基线
+\[
+R^{\rm base}_i(g)=\alpha_i(g;H)r_i^{(0)},\qquad
+\alpha_i(g;H)=
+\begin{cases}
+1,&i\le H,\\
+\Ind_{\{g\ge4\}},&i=4,\ H=3.
+\end{cases}
+\]
+令 $e_i$ 是 $\mathbb R^4$ 的第 $i$ 个标准基向量，随机命中编号与档位独立，且
+\[
+I_j\overset{\rm iid}{\sim}\Unif\{1,2,3,4\},\quad
+Y_j\overset{\rm iid}{\sim}d:=\frac14\sum_{a\in D}\delta_a.
+\]
+则四维归一化副词条状态为
+\begin{equation}\label{eq:state}
+R(g)=R^{\rm base}(g)+\sum_{j=1}^{N_H(g)}Y_je_{I_j}.
+\end{equation}
+因此 $N_3(4)=0$、$N_3(20)=4$，而 $N_4(4)=1$、$N_4(20)=5$。条件于完整生成信息 $\theta$，$H=3$ 时 $+4$ 的转移是确定性的：$\operatorname{Cov}(R(4)\mid\theta,H=3)=0_{4\times4}$。
+
+对一个已经强化至 $g_0$、实测归一化副词条为 $R(g_0)$ 的已知圣遗物，从当前等级推进到目标等级 $G\ge g_0$ 时，定义
+\[
+q_H(g_0,G)=N_H(G)-N_H(g_0),\quad
+v^{\rm det}(g_0,G)=R(g_0)+\Ind_{\{H=3,\,g_0<4\le G\}}r_4^{(0)}e_4.
+\]
+在未来强化随机事件重新编号后，
+\begin{equation}\label{eq:forecast}
+R(G)=v^{\rm det}(g_0,G)+\sum_{j=1}^{q_H(g_0,G)}Y_je_{I_j}.
+\end{equation}
+
+\section{角色及配装的评分}
+令 $r=(c,b)$ 是\emph{角色--配装方案}，$\mathcal R$ 是关注的方案集合；同一角色可有不同武器、队伍、定位和配装方案。令 $w_r(t)\ge0$ 为一次满档副词条类型 $t$ 对方案 $r$ 的线性评分权重，$w^r_i=w_r(t_i)$。主词条确定性评分为 $B_r(p,t_M,g)$。则
+\begin{equation}\label{eq:score}
+S_g^r=f_r(X(g))=B_r(p,t_M,g)+\sum_{i=1}^4w_i^rR_i(g).
+\end{equation}
+该加性形式是评分器的\emph{建模假设}，不应直接等同实际队伍伤害收益；充能阈值、暴击溢出和套装的整体效果可能非线性。
+
+将\emph{观测到的四词条中的有效类型数}定义为
+\[
+\widetilde m_r(\theta)=\sum_{i=1}^4\Ind_{\{w_i^r>0\}},
+\]
+并区分当前已激活有效词条数
+\[
+m_r^{\rm act}(g)=\sum_{i=1}^4\alpha_i(g;H)\Ind_{\{w_i^r>0\}}.
+\]
+前者即使在 $H=3,g=0$ 时也固定，适合做初始胚子的分类指标。
+
+\section{给定已知圣遗物的精确评分分布}
+固定当前观测信息 $O=(\theta,g_0,R(g_0))$ 与目标等级 $G$，记
+\[
+b_r(O,G)=B_r(p,t_M,G)+\sum_iw_i^r v_i^{\rm det}(g_0,G),\qquad
+\rho_{r,T}=\frac1{16}\sum_{i=1}^4\sum_{a\in D}\delta_{w_i^r a}.
+\]
+则评分的条件概率律是有限离散卷积：
+\begin{equation}\label{eq:law}
+\boxed{\Law(S_G^r\mid O)=\delta_{b_r(O,G)}*\rho_{r,T}^{*q_H(g_0,G)}.}
+\end{equation}
+定义 $W_1^r=\sum_iw_i^r$ 与 $W_2^r=\sum_i(w_i^r)^2$。由于 $\E Y=0.85$、$\E Y^2=0.735$，
+\begin{align}
+\E[S_G^r\mid O]&=b_r(O,G)+q_H(g_0,G)\frac{0.85}{4}W_1^r,\\
+\Var(S_G^r\mid O)&=q_H(g_0,G)\left(\frac{0.735}{4}W_2^r-\frac{0.85^2}{16}(W_1^r)^2\right).
+\end{align}
+$H=3$ 的预览第四档位不再贡献额外方差；它已纳入 $b_r(O,G)$。
+
+在\emph{有效词条等权} $w_i\in\{0,w\}$ 的简化模型下，令 $m=\widetilde m_r$，则
+\[
+J\mid m,O\sim\Bin\left(q_H(g_0,G),\frac m4\right),\qquad
+\rho_m=\left(1-\frac m4\right)\delta_0+\frac m{16}\sum_{a\in D}\delta_{wa}.
+\]
+因此评分增量服从 $\rho_m^{*q_H(g_0,G)}$。在一般权重下，$m$ 只决定随机强化命中正权重词条的概率，不足以确定评分分布。
+
+\section{筛选规则与总体条件分布}
+用 $\chi_r(s,p,t_M;\mathcal I)\in\{0,1\}$ 表示方案 $r$ 对套装、部位、主词条及当前库存环境 $\mathcal I$ 的兼容约束。包括：某套装是否为方案认可的套装；主词条是否可接受；该装备是否可作为唯一散件；是否影响套装件数等。将用于生成一件新圣遗物的来源记为 $z$，其零级生成概率测度为 $Q_z(d\theta)$，例如副本或指定套装的三合一。
+
+给定固定套装 $s$、部位 $p$、角色--配装 $r$ 与有效词条数 $m$，定义
+\begin{equation}\label{eq:population}
+F^{(z)}_{r;s,p,m}(x)=
+\frac{\displaystyle\int \Ind_{\{s(\theta)=s,\,p(\theta)=p,\,\widetilde m_r(\theta)=m,\,\chi_r(\theta;\mathcal I)=1\}}\,\Prob(S_G^r\le x\mid\theta)\,Q_z(d\theta)}
+{\displaystyle\int \Ind_{\{s(\theta)=s,\,p(\theta)=p,\,\widetilde m_r(\theta)=m,\,\chi_r(\theta;\mathcal I)=1\}}\,Q_z(d\theta)}.
+\end{equation}
+分母必须严格为正。若要固定主词条，再在分子分母指示函数中加入 $\Ind_{\{t_M(\theta)=t\}}$ 即可。不可把该总体条件分布与特定实物的条件分布 \eqref{eq:law} 混为一谈。三合一来源与副本来源对应不同的 $Q_z$，而对于已观测的具体圣遗物，强化核相同。
+
+若要显式编码生成过程，设 $\omega(t)$ 为副词条类型权重，则在给定主词条后，依次无放回抽取四种类型时的概率为
+\[
+\Prob(T\mid t_M)=\prod_{i=1}^4\frac{\omega(t_i)}{\sum_{u\in\mathcal T_A(t_M)\setminus\{t_1,\ldots,t_{i-1}\}}\omega(u)}.
+\]
+观察到的排列未必等于生成次序；对不计顺序的组合应对所有排列求和。该公式是典型的权重无放回模型，数值化时仍须核对当前实际生成规则和来源分布。
+
+\section{多角色联合价值与三合一}
+仅按某一角色的边际评分分布无法评价多角色潜力，因为不同角色对\emph{同一条随机强化路径}的评分存在相关性。对于 $\mathcal R=\{r_1,\ldots,r_k\}$，定义一次强化的联合评分增量概率测度
+\[
+\boldsymbol\rho_T=\frac1{16}\sum_{i=1}^4\sum_{a\in D}\delta_{a(w_i^{r_1},\ldots,w_i^{r_k})}.
+\]
+联合满级评分分布由 $\boldsymbol\rho_T^{*q_H(g_0,20)}$ 给出，叠加每个方案的确定性基线。
+
+令 $\tau_r$ 表示现有库存下方案 $r$ 的替代基准分数，$\lambda_r\ge0$ 表示该方案的优先权重。先为单方案定义
+\[
+p_r(X)=\Prob(S_{20}^r\ge\tau_r\mid O),\qquad
+U_r(X)=\E[\pos{S_{20}^r-\tau_r}\mid O].
+\]
+若只能将该圣遗物分配给一个方案，简化的跨方案潜在价值为
+\begin{equation}\label{eq:option}
+V(X)=\E\left[\max_{r\in\mathcal R}\lambda_r\,\chi_r(X;\mathcal I)\,\pos{S_{20}^r-\tau_r}\ \middle|\ O\right]-C_{\rm level}(X),
+\end{equation}
+其中应使用\emph{联合}评分分布计算最大值，不能把单角色边际概率简单相加。若可拆换跨队伍使用、多人同时配装或存在套装联动，更准确的库存价值应由全局配装优化给出。
+
+令 $W(\mathcal I)$ 是基于当前库存、未来强化的期望净收益及资源约束定义的总效用。选择三件候选材料 $D=\{X_1,X_2,X_3\}\subset\mathcal I$，并选择可合成套装 $s^*$。设合成结果 $Y\sim Q_{\rm sb,s^*}$，三合一的期望净收益为
+\begin{equation}\label{eq:strongbox}
+\boxed{\Delta_{\rm sb}(D,s^*)=\E_{Y}\!\left[W\bigl((\mathcal I\setminus D)\cup\{Y\}\bigr)\right]-W(\mathcal I)-C_{\rm sb}.}
+\end{equation}
+在以期望净收益为准则时，$\Delta_{\rm sb}>0$ 才支持执行该笔三合一；若仅为快速筛选，可用 $V(X)$、$p_r(X)$、$U_r(X)$ 对现有圣遗物排序后，优先挑选\emph{跨角色潜在价值最低}且作为其他用途（经验材料等）机会成本低的三件。
+
+\section{计算说明}
+使用离散动态规划即可精确计算式 \eqref{eq:law}：初始化 $P_0(b_r)=1$，然后对每次未来随机强化执行
+\[
+P_{k+1}(x)=\sum_{i=1}^4\sum_{a\in D}\frac1{16}P_k(x-w_i^r a),\qquad k=0,\ldots,q_H(g_0,G)-1.
+\]
+浮点数实现时应使用合适的量化精度或有理数索引，不能直接依赖浮点数值作为严格相等的哈希键。真实游戏的显示数值有舍入；若要逐分严格复现，应使用按类型分列的实际四档数值表并区分内部数值与显示数值。
+
+\clearpage
+\section{分支实现审查及迁移边界（2026-11-17）}
+\subsection{审查范围与重要结论}
+审查对象为 GitHub 分支
+\href{https://github.com/Zhuozhuo-219/bettergi-scripts-list/tree/custom/fishing-area-priority/repo/js/ArtifactStrongbox}{ArtifactStrongbox 代码目录}，
+读取时的分支提交为 \href{https://github.com/Zhuozhuo-219/bettergi-scripts-list/commit/a17832ffe92cfbc83b70ea74287f7de7f19cfc3a}{\texttt{a17832ffe92c}}；所见公开代码标注版本为 \texttt{0.9.4}。审查只读，\textbf{未修改仓库文件、未提交、未运行 BGI 游戏环境}。本章对实现的判断不等于运行时性能与实际 OCR 的实测结果。
+
+当前应用已有两条成熟度较高的数据链：第一条完成角色身份、五件现装、套装及主/副词条推荐的采集和断点保存；第二条完成三合一素材的 OCR、档位合法性、评分权重编译与随机强化预测。各模块名称和迁移建议见下表。这些基础\emph{应增量复用}，不宜整体推翻。
+
+当前主要不足有五点：一是按照现装同部位直接替换判断是否拆套装，而非搜索五部位联合调换；二是按照设定次数随机采样；三是三模型若未同时通过极端的保留或舍弃阈值，就停留在黄区；四是低有效词条阈值只看 $+0$ 的\emph{已激活}词条，可能提前排除有优质已知第四词条的胚子；五是整个物品的决策模块仍为占位，逐角色标签尚不能构成最终材料判断。
+
+\subsection{旧模块保留与替换矩阵}
+\small
+\begin{longtable}{p{0.31\linewidth}p{0.21\linewidth}p{0.39\linewidth}}
+\toprule
+代码位置/现行设计 & 建议 & 改造原则 \\
+\midrule
+\endfirsthead
+\toprule 代码位置/现行设计 & 建议 & 改造原则 \\
+\midrule
+\endhead
+\shortstack[l]{\texttt{account-capture} 等\\\texttt{account-store} 等} & 原样保留主体 & 继续使用身份、装备者、五部位快照和推荐的可信度检查；加入数据版本、过期标记和未来库存索引接口。\\
+\shortstack[l]{\texttt{training-characters}\\\texttt{strongbox-candidates}} & 保留、重释来源 & 培养、套装和主词条匹配作为\emph{候选用途发现}，而不是整件物品价值的全部覆盖证明；维持来源去重。\\
+\shortstack[l]{\texttt{artifact-reader}\\\texttt{artifact-enhancement}} & 保留、加强验证 & 已知待激活第四词条及数值进入确定性基线；继续保留 OCR 警告和合法档位校验。\\
+\texttt{compileCharacterScorer} & 优先保留 & 已实现固定角色上下文后提取\texttt{intercept}、\texttt{coefficients}的线性适配；加入主词条换算与上下文缓存。\\
+\texttt{generateSamples} & 用精确卷积替换主流程 & 随机模拟仅保留作离线交叉验证；精确 PMF、期望/方差、分位数和门槛尾概率使用同一概率质量表。\\
+\texttt{findPotentialMaximum} & 保留作测试 & 线性非负情形可直接给理论上界；现有分配枚举可校核非标准模型。\\
+\texttt{mainStatSuitability} & 保留 & $>15\%$及推荐覆盖率检查作为用户\emph{用途范围}筛选，不等同于圣遗物全局可回收。\\
+\shortstack[l]{\texttt{initialEffective}\\\texttt{StatPolicy}} & 从硬排除改为特征 & 同时记录已激活数 $m^{\rm act}$ 与预览四条潜在数 $\widetilde m$；仅在完整范围和无保护时允许低优先级建议。\\
+\texttt{replacementContext} & 扩展为配装可行性求解 & 从 ``同位替换拆套装则待定'' 改为枚举一个自由部位以及有数据支持的二件套组合，计算有效替换门槛。\\
+\texttt{recommendationWeights} 的三情景 & 保留为敏感性集合 & 原推荐线性秩、指数秩、原分值权重继续测试鲁棒性，但不要求三模型同意极端 $80\%/1\%$ 才能得建议。\\
+\texttt{candidates} 汇总、遮罩 & 保留视图、重构状态 & 每角色保留证据和来源；新增整件总建议及原因。概率不确定与资料缺失拆分。\\
+\texttt{artifact-decision} 历史占位 & 改为统一最终仲裁器 & \texttt{decision-rules.json}若启用，须真正校验并执行规则；不得继续作为没有生效提示的配置入口。\\
+\shortstack[l]{\texttt{run-logger}\\\texttt{mask-interaction}} & 保留扩展 & 记录决策路径、模型版本、证据完整性及可复现种子；新增新旧对照回归，保留停止/缓存行为。\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{旧筛选的三个关键纠正}
+\paragraph{有效词条先筛后算。} 当前可选阈值如 $m^{\rm act}<2$ 就对该角色判红，\emph{忽略第四词条预览}；而新模型已经知道第四词条，因此必须优先使用 $\widetilde m$、实际初始档位、$q_H$、上界与角色需求。有效词条数可以快速\emph{排序}，不应在不可逆材料建议上成为单独充分条件。若用户选择严格硬过滤，必须显示 ``按个人阈值排除该用途''，且仍经过全局保护和用途覆盖检查。
+\paragraph{拆套装即待定。} 这是安全的局部保守近似，并非真实的不可行证明。只有在库存信息完全不足时才需要标记 ``缺配套替代品证据''；在具备相关同部位替代库存后，应枚举自由位并重新配装，不再要求原散件位置不动。
+\paragraph{模型分歧或分布重叠即待定。} 统计分布的重合是普遍现象，不宜作为充分待定条件。应把\emph{资料可靠性}、\emph{模型误差}和\emph{效用接近边界}拆成独立维度，分别处理；对于有数据且无硬保护的物品，允许依据可配置损失函数作出可解释建议。
+
+\section{决策器的运行逻辑：三层证据与四种建议}
+\subsection{从逐角色标签到整件材料}
+定义三种相互独立的记录：
+\begin{align*}
+D(X)&\in\{\mathrm{verified},\mathrm{incomplete},\mathrm{invalid}\}&&\text{（资料可靠度）},\\
+A_r(X)&\in\{\mathrm{eligible},\mathrm{outside},\mathrm{unknown}\}&&\text{（角色用途范围）},\\
+V_r(X)&=(p_r,U_r,S_{\max,r},\text{context})&&\text{（已知信息下的潜在价值）}.
+\end{align*}
+$A_r=\mathrm{outside}$只说明\emph{该角色这一配装}不在用户允许范围，不蕴含其他角色同样无价值。最终推荐应使用全局仲裁器汇总所有用户已选择的用途、必要的稀有模板保护以及物品状态。\textbf{任何角色行显示 ``舍弃'' 都不应单独触发整个圣遗物投入三合一。}
+
+建议\emph{用户看到}四种结论：\textbf{保留}、\textbf{可投入三合一}、\textbf{建议试强化}、\textbf{需核对资料}。程序内部应另外记录 \texttt{reasonCode}、\texttt{scopeCoverage}、\texttt{dataConfidence}、\texttt{modelRange} 和 \texttt{version}；不要让 ``待定'' 同时承载输入错误、正常的分布重叠和主动试强化三种含义。若只能沿用红/黄/绿配色，可将试强化与资料核对显示为两种不同文本/图标，不增加底层模糊状态层级。
+
+\subsection{不可逆建议的规则顺序}
+以下为\emph{建议}而非已部署功能。一次判定顺序为：
+\begin{enumerate}
+\item \textbf{安全门：} 装备中、用户锁定、非可靠 OCR、初始三词条第四行缺失或不合法，禁止自动判材料；资料问题标记 \texttt{review-data}。非 $+0$ 物品也需估算已有投入资源和用途，不能沿用目前 ``非0级始终待定'' 的固定规则。
+\item \textbf{用途发现：} 套装适用、培养角色、主词条候选取并集；记录 $A_r$ 而非即时判全局；额外引入稀有属性模板和有限备用库存以覆盖潜在角色。
+\item \textbf{廉价价值界：} 为每个可行用途计算 $\widetilde m_r$、$H$、剩余随机强化数 $q$、确定性评分基线 $b_r$、$S_{\min,r}$、$S_{\max,r}$、$\E S_r$、$\Var S_r$；对不可能超过目标或肯定超过目标的候选直接给初步判断。
+\item \textbf{替换门槛：} 若有足够库存，则求允许换散件位置的 $\tau_r(X)$；暂仅有五件已装备资料时，采用可证明的局部基线和\emph{缺库存}标签，不能把未发现的可配套方案当作不可能。
+\item \textbf{临界概率：} 仅对上下界无法区分者做精确卷积，求 $p_r=\Prob(S^r_{20}>\tau_r\mid O)$ 和 $U_r=\E[(S^r_{20}-\tau_r)_+\mid O]$；对三个权重情景分别求值并报告范围。
+\item \textbf{整件仲裁：} 检查任何高优先级角色用途、模板保护、重复件容量和经验材料机会成本后，按用户风险模式输出保留/回收/试强化/需核对；不由逐角色 ``红色数量最多'' 投票决定。
+\end{enumerate}
+这是一条单向的计算管线，而不是众多互相覆盖的 ``状态筛选开关''。启用某个角色来源仅改变考虑哪些用途；宽松/均衡/严格仅改变效用损失与保留预算；资料可靠性保护始终生效。
+
+\section{初始三词条的劣势及廉价筛选}
+\subsection{内生机会损失：四次对五次}
+给定\emph{完全相同}的四种副词条类型、预览第四词条档位、主词条满级评分和初始四个档位，令两种初始状态都向 $+20$ 发展：初始三词条只剩 $q_3=4$ 次随机强化，初始四词条有 $q_4=5$ 次。固定角色权重 $w_i\ge0$，可用一条共同随机强化路径耦合：
+\[
+S_{20}^{(3)}=b+\sum_{j=1}^4Z_j,\qquad
+S_{20}^{(4)}=b+\sum_{j=1}^5Z_j,
+\qquad Z_j=w_{I_j}Y_j\ge0.
+\]
+因而 $S_{20}^{(3)}\le S_{20}^{(4)}$ 几乎处处，故\emph{在相同确定性基线及权重的可比条件下}，
+\begin{equation}\label{eq:three-dominance}
+\Law(S_{20}^{(3)})\preceq_{\rm st}\Law(S_{20}^{(4)}),\quad
+\Prob(S_{20}^{(3)}>\tau)\le \Prob(S_{20}^{(4)}>\tau),\quad
+U_r^{(3)}\le U_r^{(4)}.
+\end{equation}
+并且
+\[
+\E[S_{20}^{(4)}]-\E[S_{20}^{(3)}]
+=\frac{\E Y}{4}\sum_{i=1}^4w_i,
+\qquad
+S_{\max}^{(4)}-S_{\max}^{(3)}=\max_iw_i
+\]
+（第二式在 $D$ 的最大档位为 $1$ 时成立）。这严谨地支持 ``三词条保留意愿低一些'' 的直觉；但\textbf{不是}任意不同三词条胚子必定劣于任意四词条胚子的结论。已知的第四词条档位与初始其他词条质量可能压过一次随机强化差额。
+
+\subsection{不应凭空引入扣分系数}
+推荐在快速层\emph{直接}使用 $q_H$ 导致的期望、最大值与超越概率变化，避免再附加无依据的 ``三词条统一减20\%'' 等重复惩罚。若目标为减少强化成本，可单独计入试强化支出：三词条 $+0\to+4$ 是已知第四词条激活，\emph{没有新随机信息}，要观察首次真正随机强化需到 $+8$；四词条 $+0\to+4$ 即可观察第一次随机强化。实际投入成本应将三词条的这两个强化节点都计入，不能把 $+4$ 当成未知结果抽奖。
+
+在同种候选胚子之间的廉价排序，使用
+\[
+K_r(X)=\left(S_{\max,r}(X)-\tau_r(X),\ \E S_{20}^r-\tau_r(X),\ -C_{\rm test}(X)\right),
+\]
+并按词典序或事先固定的加权规则排序（但不把其三个不同单位直接相加）。若 $\tau_r$ 暂无可靠估计，则只能与同用途固定标尺比较，并降低最终回收建议的置信等级。
+
+\subsection{无需卷积的严谨概率上界}
+设 $\mu_r=\E S_{20}^r$、$\sigma_r^2=\Var S_{20}^r$。若 $\tau_r>\mu_r$，Cantelli 不等式给出
+\begin{equation}\label{eq:cantelli}
+\Prob(S_{20}^r\ge\tau_r\mid O)\le
+\frac{\sigma_r^2}{\sigma_r^2+(\tau_r-\mu_r)^2}.
+\end{equation}
+这是可选的廉价\emph{保守上界}；当其已经低于回收判据时，无需计算 PMF。反向地，对 $\tau_r<\mu_r$ 可界定左尾。更廉价的确定性判断仍是 $S_{\max,r}\le\tau_r$（严格超越概率为零）和 $S_{\min,r}>\tau_r$（超越概率为一）。模型权重非负且抽档位在 $D$ 时，$S_{\max,r}=b_r+q\max_iw_i$；$S_{\min,r}=b_r+q\min_{i,a\in D}(w_i a)$。
+
+\section{散件优化与旧版比较基准的替换}
+\subsection{必须把其他部位的可调整性纳入门槛}
+先不考虑不同角色同时抢同一件库存，只固定角色配装 $r$。设 $B_r(\mathcal I_{-X})$ 表示\emph{不允许使用候选物 $X$} 时当前可行五件套配置的最高评分。设 $H_r(X;\mathcal I_{-X})$ 表示强制使用 $X$ 时，剩余四个部位的最高可行评分；其中套装约束已施加，所有数据采用同一角色上下文评分尺度。则
+\begin{equation}\label{eq:threshold-new}
+\boxed{\tau_r(X)=B_r(\mathcal I_{-X})-H_r(X;\mathcal I_{-X}).}
+\end{equation}
+当 $S_{20}^r(X)=z$，加入物品后的提升为
+\begin{equation}\label{eq:uplift-new}
+\boxed{\Delta_r(X,z)=\pos{z-\tau_r(X)}.}
+\end{equation}
+式 \eqref{eq:threshold-new} 的一个重要性质是：复杂的五件套合法性与散件重分配，能先压缩为一个\emph{给定候选物的有效阈值}；再与精确一维强化分布结合，无需在每次随机强化中重复枚举套装。前提是评分加性、配装规则固定且能实际取得替代库存。多方案评分与非线性套装收益需重新验证可比性。
+
+若只考虑目标四件套 $s$ 与一处自由部位，已知每部位同套最优 $A_{r,s,p}$、不限制套装最优 $O_{r,p}$，则
+\[
+B_{r,s}(\mathcal I)=\max_{k\in\mathcal P}
+\left(O_{r,k}+\sum_{p\neq k}A_{r,s,p}\right).
+\]
+候选物所在的自由位不必等于当前自由位。对 2+2 配装，需要枚举两套的两个占位分配及第五件自由位；不可将先前的 ``当前保持某两个套装件数'' 当成唯一合法集合。
+
+\subsection{现阶段没有全库存如何实现}
+当前 \texttt{account-store.js}主要保存角色\emph{已装备的五件观察快照}，并非全背包清单。阶段A可以使用现有五件构造\emph{可证明可行的}局部方案：如果直接同位替换不拆套装，现有判断即有效；如果直接会拆，则只有查到明确的配套替换候选，才声称可恢复套装，否则显示 ``可能需要配套圣遗物''，\emph{不要}据此认为该属性没有提升。阶段B再加入有索引的全库存，得到式 \eqref{eq:threshold-new} 的完整解。
+
+对 $2700$ 件左右的库存，建议首次扫描分批 OCR，按批次存储并可暂停/断点恢复；记录每件的\texttt{captureSession}、\texttt{page/index}、\texttt{observedAt}、\texttt{rawFields}、\texttt{quality}、\texttt{fingerprint}、\texttt{version}；当缺少游戏稳定 ID 时，\texttt{fingerprint}只能辅助匹配，\emph{不能唯一标识属性恰巧相同的物品}。后续按套装、部位、主词条、有效属性模板建立索引，并维护相关角色的前 $K$ 候选集和可行性缓存；实际评估不应每次扫描所有圣遗物，更不应每次都重新 OCR 全库。手动挑选物品时，直接识别当前物品仍应独立工作。
+
+\section{三情景敏感性、减少待定及有限稀有保护}
+\subsection{改造三情景鲁棒性判据}
+现行的推荐线性秩、指数秩和原评分权重可形成模型集合 $\mathcal J$，并对每个模型 $j$ 计算
+\[
+p_{r,j}=\Prob(S_{20}^{r,j}>\tau_{r,j}\mid O),\quad
+U_{r,j}=\E[\pos{S_{20}^{r,j}-\tau_{r,j}}\mid O],\quad
+U_r^- =\min_{j\in\mathcal J}U_{r,j},\quad U_r^+=\max_{j\in\mathcal J}U_{r,j}.
+\]
+\textbf{旧设计的优点}是明确揭示三种权重的差异，\textbf{需要修改的地方}是不能把 ``未同时满足下界 $80\%$ 或上界 $1\%$'' 一律解释为数学意义的待定。应定义可配置的保留收益阈值 $C_r^{\rm keep}$、弃置后悔成本 $L_r^{\rm drop}$ 和分类预算；例如模型区间 $[U_r^-,U_r^+]$ 全高于成本则保留，全低于成本且不存在保护用途则考虑回收；跨阈值时依据风险模式推荐\emph{试强化或有条件保留}，而不是永久未知。
+
+形式上，令 $a\in\{\mathrm{keep},\mathrm{drop},\mathrm{test}\}$ 为动作，$\ell(a,\theta,j)$ 为在真实强化结果、角色需求和模型 $j$ 下的损失。可使用\emph{稳健风险最小化}：
+\begin{equation}\label{eq:robust-rule}
+a^*(X)=\arg\min_a\ \max_{j\in\mathcal J}
+\E_j[\ell(a,S_{20})\mid O],
+\end{equation}
+并叠加不可违反的资料及锁定保护。实装初期不必立即定义完整损失函数，可先用明确的上下界分支、预期正提升与模板配额近似。\emph{没有基准数据不等于存在分布重叠}；二者不能归入同一个 \texttt{unknown}。
+
+\subsection{为什么可以减少待定，为什么无法保证清零}
+新机制至少消除以下结构性待定来源：\textbf{(a)} 通过确定性上下界与精确概率取代随机抽样误差及其 Wilson 区间；\textbf{(b)} 通过 $\tau_r(X)$ 的散件重新分配代替 ``直接拆套装→未知''；\textbf{(c)} 通过风险/成本判断代替 ``分布重合→未知''；\textbf{(d)} 通过 ``建议试强化'' 将有行动价值的模糊情形转为明确行动。\emph{不能}在 OCR 缺失、角色身份不明、主词条计价失败、数据库覆盖不足、库存未全或非线性套装评分严重不可靠时无条件给回收结论。严格区分信息不足与真正的模型风险，是避免误删而非单纯降低待定比例的关键。
+
+建议统计\emph{无关覆盖之外}的以下指标：
+\[
+r_{\rm review}=\frac{\#\{\text{需核对物品}\}}{\#\{\text{可识别物品}\}},\quad
+r_{\rm test}=\frac{\#\{\text{建议试强化}\}}{\#\{\text{可识别物品}\}},\quad
+r_{\rm unsafe}=\frac{\#\{\text{误判投入材料}\}}{\#\{\text{标记材料且完成复核}\}}.
+\]
+以误删率、因状态冲突造成的无结论率、单件时延共同衡量新旧模型，而不能仅优化 ``黄区更少''。
+
+\subsection{跨角色稀有属性模板保护}
+定义模板集合 $\mathcal A$：暴击输出、生命倍率、防御倍率、精通反应、充能辅助及混合倍率等。每件物品可匹配多个模板 $a\in\mathcal A$，模板按部位、特定主词条及副词条相对质量进一步拆分。对模板 $a$ 设置允许持有的优质备用件数 $K_a$，记当前可信库存中同模板质量排序为 $\operatorname{rank}_a(X)$。可设置
+\[
+\operatorname{Protect}(X)=\Ind_{\{\exists a: X\in a,\ \operatorname{rank}_a(X)\le K_a\}}.
+\]
+稀有杯子由主词条生成概率决定其\emph{可替代性}，不应直接乘评分稀有度系数；保护名额随账户培养目标、已持有数量与仓库压力变化。未完成全库 OCR 前，\emph{不允许}仅因 ``本地无同类物品'' 就断言其为全库存第一名；可以使用少量静态保护名额与软提示。模板保护比无限扩展所有可能未来角色更可控。
+
+\section{试强化策略、计算复杂度和代码迁移}
+\subsection{可执行的试强化动作}
+设当前级别为 $g$，下一个包含\emph{随机信息}的节点为 $g^+$。对初始四词条的 $+0$，$g^+=4$；对初始三词条的 $+0$，\textbf{$g^+=8$}，虽然 $+4$ 必须先支付激活成本；对已四条激活的圣遗物，$g^+$ 为下一个 $4$ 的倍数强化节点。\emph{试强化}只有在满足用户强化材料预算、该物品不会因其他硬保护被直接丢弃且结果可能改变决策时才有意义。若最理想未来仍低于门槛，应直接回收；若现有信息已足以稳健保留，不必为\emph{决定是否保留}而试强化。
+
+动态最优停止可以用
+\[
+J_g(x)=\max\big\{J_g^{\rm stop}(x),\ -C_{g,g^+}+\E[J_{g^+}(X')\mid X(g)=x]\big\}
+\]
+作为未来扩展。注意 ``观察新节点本身增加期望'' 是错误的；价值来自\emph{观察后可以选择停止并节省后续成本}。在正式加入资源成本数据前，可以将试强化作为明确的中间行动建议，不伪称其净收益已经证明为正。
+
+\subsection{精确分布替换 MC 的实装路径}
+\texttt{compileCharacterScorer()}已经返回可复用的 \texttt{intercept}和\texttt{coefficients}，其分数随副词条数值为仿射函数（固定武器、角色上下文及归一化方案后）。据此：
+\begin{enumerate}
+\item 将已知待激活值纳入确定性基线。调用 \texttt{prepareProjectionInput()}；以输入中的剩余随机强化次数作为 $q$，不得在 $+4$ 重抽预览词条。
+\item 增加\texttt{artifact-distribution.js}计算每角色 $16$ 项单步增量 PMF、期望方差与 $q$ 次卷积。统一输出 $p_r$、$U_r$、分位数、上下界；只在\emph{最终展示}量化到一位小数，避免每次转移过早舍入。
+\item 对同一候选的权重情景分别计算 PMF；原模拟器仅作测试与对照。主词条截距应在不同主词条情况下，使用同一配装上下文分别重建，不可调用副词条档位表给元素增伤/治疗主词条硬编码 ``单位档位''。
+\item \texttt{findPotentialMaximum()}作为检验器；缓存键纳入角色/配装权重版本、主词条、四词条数值、当前等级、剩余随机次数、套装模式及替换门槛。\textbf{概率分布缓存}与\textbf{策略判定缓存}分开，使切换培养名单或开关不必重新抽样/卷积。
+\item 分位数和超越概率均以\emph{相同的精确分布}计算；明确概率阈值使用严格 $>$ 还是 $\ge$，与屏幕显示分数的舍入保持独立。对连续浮点分值可先提取权重和整数化物理档位，再采用受控量化和误差上界。
+\end{enumerate}
+原始路径数上界为 $16^5$，虽然强化节点少，但对许多角色逐件展开所有浮点不同分数仍可能昂贵。应进行\emph{同分数合并、可控量化、相同权重缓存以及上下界提前退出}，并实测调用延迟，不能仅凭 ``精确'' 宣称毫秒级运行。
+
+\subsection{迭代顺序与验收条件}
+\begin{enumerate}
+\item \textbf{P0--保留旧数据链：} 在现有 \texttt{verify-all.mjs} 基础上增加第四条预览、相同初始档位三/四词条随机机会差异及非零级素材状态测试；不修改现有账号文件结构。
+\item \textbf{P0--概率引擎：} 用有限情形手工枚举或模拟一致性检验 PMF、归一化和目标概率；比较新旧耗时、输出随机误差；旧 UI 的前20\%/前80\%列保留但改由精确分布产生。
+\item \textbf{P0--简化仲裁：} 保留主词条和 OCR 硬校验，旧硬性有效词条过滤降级为风险特征；提供整件 ``保留/材料/试强化/需核对'' 及最主要原因，不自动点击材料选择或合成。
+\item \textbf{P1--散件优化：} 先接角色已装备快照，确定哪些直接交换合法；随后接轻量库存索引，计算五种自由位和有效替换门槛；保持配装数据的可行性与新鲜度标志。
+\item \textbf{P1--有限保护池：} 加入用户可配置的稀有模板与每类前 $K$ 件；若仅有部分库存，保护宁可多一些，不能凭未知统计而解除安全门。
+\item \textbf{P2--库存扫描与序贯试强化：} 支持首次分批扫描、断点恢复、指纹冲突、版本化存储和增量刷新；再引入强化资源成本与最优停止策略。
+\end{enumerate}
+验收至少覆盖：\textbf{(i)} 同基线下初始四词条满级分布随机占优三词条；\textbf{(ii)} 预览第四词条已经属于确定基线而不计额外随机方差；\textbf{(iii)} 一个角色硬排除不会覆盖其他角色保留/模板保护；\textbf{(iv)} 直接拆四件套但通过更换其他部位能恢复时不再一律待定；\textbf{(v)} 分布重合不再自动出黄；\textbf{(vi)} 缺失身份/主词条/库存数据不产生伪确定的材料判断；\textbf{(vii)} 重复切换前端选项不会重做不必要的概率计算；\textbf{(viii)} 当前已有离线测试和 BGI 识别/遮罩用例不回退。
+
+\paragraph{风险界限}
+本方案\emph{能够减少结构性待定并降低层级开关的互相覆盖}，但无法证明对所有实物都能安全给定论。因为原始资料可能不完整、不同评分方案存在真实分歧、全库存尚未采集且部分角色的实际属性效用非线性。应把这些剩余情形明确分类为\emph{资料核对}或\emph{资源取舍}，而不是为了消灭待定牺牲误删控制。任何用户风险设置改变都应留存原因和模式，以便复现与回滚判断。
+
+\paragraph{适用范围} 本文假设所有随机强化仍按四条等概率、档位四等概率且相互独立，评分函数对副词条数值线性，第四词条档位已可观测。任何游戏后续版本的机制变化、特殊重铸道具、非线性角色评分或套装联动，均需修改对应的转移核或效用函数，不应直接套用以上假设。
+\end{document}

@@ -13,3 +13,5 @@ await import('./verify-assessment.mjs')
 await import('./verify-summary.mjs')
 await import('./verify-initial-stats.mjs')
 await import('./verify-deployment.mjs')
+
+await import('./verify-revised-model.mjs')

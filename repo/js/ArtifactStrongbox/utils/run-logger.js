@@ -18,7 +18,7 @@ export function createRunLogger(options = {}, io = file, warn = message => log.i
   const runId = new Date().toISOString().replace(/[:.]/g, "-") + "-" + Math.random().toString(16).slice(2, 10)
   const directory = `data/logs/${account}-${runId}`
   const path = `${directory}/run.json`
-  const metadata = { schemaVersion: 2, version: "0.9.4", runId, account, startedAt: new Date().toISOString(),
+  const metadata = { schemaVersion: 2, version: "0.10.0", runId, account, startedAt: new Date().toISOString(),
     mode: options.runCharacterWarehouse ? "account-capture" : options.selectTrainingCharacters ? "training-selection" : "strongbox",
     status: "running", chunks: 0, events: 0 }
   let lines = [], disabled = false, finished = false

@@ -2,6 +2,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createHash } from 'node:crypto'
 import { spawnSync } from 'node:child_process'
 
 const sourceRoot = fileURLToPath(new URL('../', import.meta.url))
@@ -62,6 +63,7 @@ export function deployToRoot(bgiRoot, backupBase = path.join(path.dirname(path.r
   for (const name of saved) safePath(target, name)
   const preserved = name => saved.some(entry => name === entry || name.startsWith(entry + '/'))
   const files = listRuntimeFiles()
+  const contents = new Map(files.map(name => [name, fs.readFileSync(safePath(sourceRoot, name))]))
   const backup = path.join(backupBase, 'ArtifactStrongbox-' + stamp())
   fs.mkdirSync(backup, { recursive: true })
   if (fs.existsSync(target)) {
@@ -80,9 +82,12 @@ export function deployToRoot(bgiRoot, backupBase = path.join(path.dirname(path.r
   for (const name of files) {
     const destination = safePath(target, name)
     if (preserved(name) && fs.existsSync(destination)) { kept.push(name); continue }
-    writeFile(destination, fs.readFileSync(safePath(sourceRoot, name)))
+    writeFile(destination, contents.get(name))
+    if (!fs.readFileSync(destination).equals(contents.get(name))) throw new Error(`部署回读不一致：${name}`)
   }
   writeFile(marker, JSON.stringify({ commit: execute('git', ['rev-parse', 'HEAD']).trim(),
+    dirty: Boolean(execute('git', ['status', '--porcelain']).trim()),
+    hashes: Object.fromEntries(files.map(name => [name, createHash('sha256').update(fs.readFileSync(safePath(target, name))).digest('hex')])),
     deployedAt: new Date().toISOString(), files }, null, 2) + '\n')
   return { target, backup, kept, fileCount: files.length }
 }
@@ -91,10 +96,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   try {
     const args = process.argv.slice(2)
     if (args.length !== 2 || args[0] !== '--bgi-root') throw new Error('Usage: node tools/deploy.mjs --bgi-root E:\\BetterGI')
-    const tasks = execute('tasklist.exe', ['/FI', 'IMAGENAME eq BetterGI.exe', '/FO', 'CSV', '/NH'])
-    if (/^"BetterGI\.exe",/im.test(tasks)) throw new Error('请先从托盘退出 BetterGI，再部署脚本。')
-    if (execute('git', ['branch', '--show-current']).trim() !== 'custom/fishing-area-priority') throw new Error('请切换到 custom/fishing-area-priority 分支')
-    if (execute('git', ['status', '--porcelain']).trim()) throw new Error('请先提交工作区修改，再部署已确认的源码。')
     process.stdout.write(execute(process.execPath, ['tools/verify-all.mjs'], sourceRoot))
     console.log(JSON.stringify(deployToRoot(args[1]), null, 2))
   } catch (error) { console.error(error.message); process.exitCode = 1 }

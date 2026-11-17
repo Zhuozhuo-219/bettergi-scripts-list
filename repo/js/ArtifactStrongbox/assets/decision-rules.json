@@ -1,5 +1,5 @@
 {
   "schemaVersion": 1,
-  "description": "取舍数据库占位；当前版本不执行规则，始终保留人工判断。",
+  "description": "整件仲裁器支持protect-stats保护规则，空数组沿用内置双爆保护。",
   "rules": []
 }

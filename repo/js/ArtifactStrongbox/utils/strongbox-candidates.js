@@ -2,7 +2,7 @@ import { createAccountStore } from "./account-store.js"
 import { createTrainingStore, trainingCatalog } from "./training-characters.js"
 import { normalizeTravelerLabel, travelerDisplayName } from "./character-names.js"
 import { loadCharacterSearch, searchKeysForName } from "./character-search.js"
-import { inventoryPressure, mainStatSuitability, mainRuleAssessment, initialEffectiveStatPolicy, initialEffectiveRuleAssessment } from "./character-assessment.js"
+import { inventoryPressure, mainStatSuitability, mainRuleAssessment, initialEffectiveStatPolicy } from "./character-assessment.js"
 
 export const CANDIDATE_ELEMENTS = ["火", "水", "风", "雷", "草", "冰", "岩"]
 const normalize = value => String(value || "").normalize("NFKC").replace(/\s/g, "")
@@ -42,7 +42,7 @@ export function matchStrongboxCandidates(artifact, catalog, selected, flags) {
     const initialStats = setMatch || training || mainMatch ? initialEffectiveStatPolicy(artifact, character.record, flags) : null
     if (setMatch || training || mainMatch) candidates.push({ name: character.name, element: character.element,
       profileIds: character.profileIds, setMatch, training, mainMatch, selectedForTraining: selected.includes(character.name),
-      initialStats, initialRule: initialEffectiveRuleAssessment(initialStats),
+      initialStats,
       mainRule: mainRuleAssessment(artifact, character.record, mainFit) })
   }
   return candidates
@@ -54,12 +54,12 @@ export function summarizeCharacterAssessments(rows, candidates = []) {
     if (!groups.has(row.name)) groups.set(row.name, { rows: [], expected: [] })
     groups.get(row.name).rows.push(row)
   }
-  const result = { fodder: 0, unknown: 0, keep: 0, total: groups.size, unit: "characters", characters: [] }
+  const result = { fodder: 0, unknown: 0, test: 0, keep: 0, total: groups.size, unit: "characters", characters: [] }
   for (const [name, group] of groups) {
     const states = group.rows.map(row => row.assessment?.status || "unknown")
     const complete = group.expected.every(id => group.rows.some(row => row.id === id))
-    const profileIndependentExcluded = group.rows.length > 0 && group.rows.every(row => ["main-not-recommended", "initial-effective-below-threshold"].includes(row.assessment?.code))
-    const status = states.includes("keep") ? "keep" : states.length > 0 && states.every(state => state === "fodder") &&
+    const profileIndependentExcluded = group.rows.length > 0 && group.rows.every(row => ["main-not-recommended"].includes(row.assessment?.code))
+    const status = states.includes("keep") ? "keep" : states.includes("test") ? "test" : states.length > 0 && states.every(state => state === "fodder") &&
       (complete || profileIndependentExcluded) ? "fodder" : "unknown"
     result[status]++
     result.characters.push({ name, status })
@@ -72,12 +72,12 @@ export function presentCandidateProjection(projection, candidates) {
   const byName = new Map(candidates.map(candidate => [candidate.name, candidate]))
   const rows = (projection.rows || []).filter(row => byName.has(row.name)).map(row => {
     const candidate = byName.get(row.name)
-    return { ...row, ...candidate, assessment: candidate.initialRule || row.assessment }
+    return { ...row, ...candidate, assessment: row.assessment }
   })
   for (const candidate of candidates.filter(candidate => !rows.some(row => row.name === candidate.name))) {
     const reason = candidate.profileIds.length ? "评分计算失败" : "缺少评分规则"
     rows.push({ ...candidate, id: `unavailable:${candidate.name}`, label: reason, scoreUnavailable: true, top20: null, top80: null,
-      assessment: candidate.initialRule || candidate.mainRule || { status: "unknown", label: "待定", code: "score-unavailable", reason } })
+      assessment: candidate.mainRule || { status: "unknown", label: "需核对", code: "score-unavailable", reason } })
   }
   const group = row => row.setMatch ? row.setMatch.count === 4 ? 0 : 1 : row.training ? 2 : 3
   rows.sort((a, b) => group(a) - group(b) || (b.setMatch?.usageRate || 0) - (a.setMatch?.usageRate || 0) ||
@@ -96,9 +96,21 @@ export function createStrongboxSession(options, customProfiles = [], io = file) 
   const store = createTrainingStore(options.userIdentifier, io)
   let selected = store.read().filter(name => catalog.some(row => row.name === name))
   let flags = { showSetCharacters: true, showTrainingCharacters: true, matchMainStat: false, respectExistingSets: true,
-    excludeLowInitialStats: false, minInitialEffectiveStats: 2 }
+    confirmScope: false, confirmItem: false, excludeLowInitialStats: false, minInitialEffectiveStats: 2 }
   let revision = 0
+  let confirmationItemKey = null
   return {
+    clearItemConfirmation() {
+      if (flags.confirmItem) { flags = { ...flags, confirmItem: false }; revision++ }
+    },
+    observeArtifact(artifact) {
+      const key = JSON.stringify([artifact?.name, artifact?.setName, artifact?.slot, artifact?.level, artifact?.mainStat,
+        artifact?.subStats?.map(stat => [stat.name, stat.value, stat.percent, stat.activation])])
+      if (key !== confirmationItemKey) {
+        confirmationItemKey = key
+        if (flags.confirmItem) { flags = { ...flags, confirmItem: false }; revision++ }
+      }
+    },
     controls: () => ({ accountId: account.accountId, revision, selected, flags, capacity,
       catalog: catalog.map(({ record, ...row }) => row) }),
     assessmentRecords: () => Object.fromEntries(catalog.map(row => [row.name, JSON.parse(JSON.stringify(row.record))])),
@@ -107,13 +119,15 @@ export function createStrongboxSession(options, customProfiles = [], io = file) 
       // 兼容旧版消息未携带新选项；显式false保留，错误类型仍拒绝。
       const supplied = { ...data?.flags }
       if (!Object.hasOwn(supplied, "respectExistingSets")) supplied.respectExistingSets = flags.respectExistingSets
-      for (const key of ["excludeLowInitialStats", "minInitialEffectiveStats"]) if (!Object.hasOwn(supplied, key)) supplied[key] = flags[key]
+      for (const key of ["confirmItem", "confirmScope", "excludeLowInitialStats", "minInitialEffectiveStats"]) if (!Object.hasOwn(supplied, key)) supplied[key] = flags[key]
       if (!data || !Array.isArray(data.characters) || data.characters.some(name => typeof name !== "string") ||
         !data.flags || Object.keys(flags).filter(key => key !== "minInitialEffectiveStats").some(key => typeof supplied[key] !== "boolean") ||
         !Number.isInteger(supplied.minInitialEffectiveStats) || supplied.minInitialEffectiveStats < 0 || supplied.minInitialEffectiveStats > 4) throw new Error("候选筛选设置格式错误")
       const next = [...new Set(data.characters)]
       if (next.some(name => !catalog.some(row => row.name === name))) throw new Error("只能选择当前账号已录入的角色")
       if (JSON.stringify(next) !== JSON.stringify(selected)) store.save(next, catalog, { allowEmpty: true })
+      if (JSON.stringify(next) !== JSON.stringify(selected) ||
+          ["showSetCharacters", "showTrainingCharacters", "matchMainStat"].some(key => supplied[key] !== flags[key])) supplied.confirmScope = false
       selected = next
       flags = Object.fromEntries(Object.keys(flags).map(key => [key, supplied[key]]))
       revision++

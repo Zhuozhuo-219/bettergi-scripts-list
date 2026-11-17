@@ -61,18 +61,18 @@ const original = JSON.stringify({ good, weakRecord })
 const keep = await createProjectionService({ simulationCount: 1000 }, [], { 芙宁娜: weakRecord }).calculate(good, {}, ids)
 assert.equal(keep.rows[0].assessment.status, 'keep')
 assert.equal(keep.rows[0].assessment.models.length, 3)
-assert.ok(keep.rows[0].assessment.bounds.minimumMeaningful >= ASSESSMENT_POLICY.keepProbability)
+assert.ok(keep.rows[0].assessment.modelRange.lower >= 0.5)
 const discard = await createProjectionService({ simulationCount: 1000 }, [], { 芙宁娜: strongRecord }).calculate(candidate(false), {}, ids)
 assert.equal(discard.rows[0].assessment.status, 'fodder')
-assert.ok(discard.rows[0].assessment.bounds.maximumImprove <= 0.01)
+assert.ok(discard.rows[0].assessment.modelRange.upper <= 0.05)
 const notEnough = await createProjectionService({ simulationCount: 100 }, [], { 芙宁娜: strongRecord }).calculate(candidate(false), {}, ids)
-assert.equal(notEnough.rows[0].assessment.status, 'unknown')
+assert.equal(notEnough.rows[0].assessment.status, 'fodder', '精确分布摆脱样本量保护')
 assert.equal(JSON.stringify({ good, weakRecord }), original, '不改素材数值或账号原始记录')
 assert.equal(replacementContext({ ...good, setName: '深林的记忆' }, weakRecord).code, 'set-break')
 const breaksSet = { ...good, setName: '深林的记忆' }
 const switchService = createProjectionService({ simulationCount: 1000 }, [], { 芙宁娜: weakRecord })
 const restricted = await switchService.calculate(breaksSet, {}, ids)
-assert.equal(restricted.rows[0].assessment.code, 'set-break')
+assert.equal(restricted.rows[0].assessment.requiresCompanion, true)
 assert.equal(switchService.cached(breaksSet, ids, { respectExistingSets: false }), null, '开关必须进入缓存键')
 const unrestricted = await switchService.calculate(breaksSet, {}, ids, { respectExistingSets: false })
 assert.equal(unrestricted.rows[0].assessment.status, 'keep', '关闭约束后允许原本拆套装的纯属性提升')
@@ -82,9 +82,9 @@ assert.equal(unrestricted.rows[0].top20, restricted.rows[0].top20)
 assert.equal(unrestricted.rows[0].top80, restricted.rows[0].top80, '切换只影响可行性，不重抽样改变原分位数')
 assert.equal(switchService.cached(breaksSet, ids, { respectExistingSets: false }), unrestricted)
 assert.equal(switchService.cached(breaksSet, ids), null)
-assert.equal((await switchService.calculate(breaksSet, {}, ids)).rows[0].assessment.code, 'set-break', '重新勾选恢复限制')
+assert.equal((await switchService.calculate(breaksSet, {}, ids)).rows[0].assessment.requiresCompanion, true, '重新勾选恢复配套证据要求')
 const initialFilter = await switchService.calculate(breaksSet, {}, ids, { excludeLowInitialStats: true, minInitialEffectiveStats: 3 })
-assert.equal(initialFilter.rows[0].assessment.code, 'initial-effective-below-threshold', '玩家初始词条阈值先于拆套装约束')
+assert.notEqual(initialFilter.rows[0].assessment.code, 'initial-effective-below-threshold', '词条阈值仅作特征')
 const onlyCup = record(); delete onlyCup.slots.生之花
 assert.equal(replacementContext(good, onlyCup).code, 'equipment')
 const pureCup = replacementContext(good, onlyCup, { respectExistingSets: false })
@@ -109,9 +109,9 @@ assert.equal(replacementContext(good, low).code, 'baseline-level')
 const bad = record(); bad.slots.空之杯.equippedArtifact.subStats[0].value = 999
 assert.equal(replacementContext(good, bad).code, 'baseline-invalid')
 assert.equal(replacementContext({ ...good, mainStat: { name: '水元素伤害加成', percent: true } }, weakRecord).code, 'main-changed')
-const leveled = { ...good, level: 1 }
+const leveled = annotateArtifactEnhancement({ ...good, level: 1 })
 const protectedResult = await createProjectionService({ simulationCount: 1000 }, [], { 芙宁娜: weakRecord }).calculate(leveled, {}, ids)
-assert.equal(protectedResult.rows[0].assessment.code, 'leveled')
+assert.ok(protectedResult.rows[0].assessment.models.length, '非0级继续提供价值分布')
 const without = await createProjectionService({ simulationCount: 1000 }, [], {}).calculate(good, {}, ids)
 assert.equal(without.rows[0].assessment.status, 'unknown')
 assert.equal(mainStatSuitability(good, weakRecord).state, 'allowed')
@@ -152,7 +152,7 @@ assert.equal(crossResult.rows[0].assessment.mainChanged, true)
 const linearCross = crossResult.rows[0].assessment.models[0]
 const expectedBase = (23.3 / 3.89 + 7.8 / 7.77) + (2 / 3) * 46.6 / 5.83
 assert.ok(Math.abs(linearCross.baselineScore - expectedBase) < 1e-8, '不同主词条必须计入现装主属性，不能只看副词条')
-assert.equal(crossResult.rows[0].assessment.status, 'unknown', '两种推荐主词条缺乏清晰分布优势时待定')
+assert.ok(['test', 'keep', 'fodder'].includes(crossResult.rows[0].assessment.status), '可比较分布按期望收益给行动建议')
 const crossSands = record(true)
 crossSands.slots.时之沙.equippedArtifact = { ...baseline(true), slot: '时之沙' }
 crossSands.recommendations.时之沙 = { ...recommendation, mainStats: [
@@ -161,8 +161,8 @@ const rechargeSands = annotateArtifactEnhancement({ ...crossCandidate, name: '�
   mainStat: { name: '元素充能效率', percent: true, value: 7.8 },
   subStats: crossCandidate.subStats.map(row => ({ ...row })) })
 const crossDiscard = await createProjectionService({ simulationCount: 1000 }, [], { 芙宁娜: crossSands }).calculate(rechargeSands, {}, ids)
-assert.equal(crossDiscard.rows[0].assessment.code, 'cross-main-fodder')
-assert.ok(crossDiscard.rows[0].assessment.models.every(model => model.nearBaselineInterval.upper <= 0.01))
+assert.equal(crossDiscard.rows[0].assessment.status, 'fodder')
+assert.ok(crossDiscard.rows[0].assessment.models.every(model => model.expectedPositiveGain <= 0.05))
 assert.equal(mainStatSuitability({ slot: '生之花', mainStat: { name: '生命值', percent: false } }, {}).state, 'fixed')
 assert.equal(mainStatSuitability({ slot: '死之羽', mainStat: { name: '攻击力', percent: false } }, {}).state, 'fixed')
 const badMainRecord = record(); badMainRecord.recommendations.空之杯.mainStats[0].usageRate = 170
@@ -191,7 +191,7 @@ const el = () => ({ style: {}, dataset: {}, children: [], value: '', replaceChil
 const byId = id => { if (!elements.has(id)) elements.set(id, el()); return elements.get(id) }
 const window = { innerWidth: 1920, innerHeight: 1080, addEventListener() {}, htmlMask: {} }
 vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], { window, document: { getElementById: byId, createElement: el } })
-for (const [result, status, label] of [[keep, 'keep', '保留'], [discard, 'fodder', '舍弃'], [without, 'unknown', '待定']]) {
+for (const [result, status, label] of [[keep, 'keep', '保留'], [discard, 'fodder', '低价值'], [without, 'unknown', '需核对']]) {
   const payload = { state: 'ready', artifact: good, decision: { status: 'unknown', label: '待人工判断', reasons: [] }, projection: presentCandidateProjection(result, matched),
     controls: { accountId: 'test', selected: [], flags, catalog: [], revision: 0, capacity: inventoryPressure(2600), interactive: false } }
   window.htmlMask.onMessage({ url: '/artifact', data: payload })
@@ -204,4 +204,4 @@ for (const [result, status, label] of [[keep, 'keep', '保留'], [discard, 'fodd
   assert.equal(byId('count-' + status).textContent, '1')
   assert.ok(byId('summary-scope').textContent.includes('非整件最终结论'))
 }
-console.log('通过：容量边界、秩权重单位、Wilson少样本保护、三模型保留/舍弃/分歧、真实模拟、套装4件/2+2/散件约束、未知/过期/低级现装保护、三色标签和综合结论保护。')
+console.log('通过：容量边界、秩权重单位、Wilson少样本保护、三情景期望收益判定、精确分布、套装4件/2+2/散件约束、未知/过期/低级现装保护、角色标签和综合结论保护。')

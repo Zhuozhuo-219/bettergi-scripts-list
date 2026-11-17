@@ -36,10 +36,16 @@
     "default": "1000"
   },
   {
-    "name": "simulationCount",
+    "name": "keepGainThreshold",
     "type": "input-text",
-    "label": "随机强化模拟次数 N（100～50000）",
-    "default": "10000"
+    "label": "期望正提升保留线（核心满档单位，默认0.5）",
+    "default": "0.5"
+  },
+  {
+    "name": "discardGainThreshold",
+    "type": "input-text",
+    "label": "期望正提升低价值线（默认0.05，须低于保留线）",
+    "default": "0.05"
   },
   {
     "name": "showRegion",

@@ -1,5 +1,6 @@
 import { MODEL_VERSION, prepareProjectionInput, getCharacterProfiles, validateProfileDatabase, compileCharacterScorer, scoreRound } from "./projection-model.js"
-import { assessCharacterArtifact } from "./character-assessment.js"
+import { createDistributionEngine, distributionQuantile, DISTRIBUTION_VERSION } from "./artifact-distribution.js"
+import { assessCharacterArtifact, observedEquipment } from "./character-assessment.js"
 
 export function loadProjectionProfiles() {
   return validateProfileDatabase(JSON.parse(file.readTextSync("assets/character-profiles.json")))
@@ -9,12 +10,6 @@ export function descendingQuantile(values, quantile) {
   if (!values.length || quantile <= 0 || quantile > 1) throw new Error("降序分位参数无效")
   const sorted = [...values].sort((a, b) => b - a)
   return sorted[Math.max(0, Math.ceil(quantile * sorted.length) - 1)]
-}
-
-function hash(text) {
-  let value = 2166136261
-  for (let i = 0; i < text.length; i++) value = Math.imul(value ^ text.charCodeAt(i), 16777619)
-  return value >>> 0
 }
 
 function randomGenerator(seed) {
@@ -39,7 +34,7 @@ function checkCancelled(hooks) {
   if (hooks.isCancelled?.()) throw new Error("预测已取消")
 }
 
-async function generateSamples(input, count, seed, hooks) {
+export async function generateSamples(input, count, seed, hooks) {
   const random = randomGenerator(seed)
   const samples = []
   for (let index = 0; index < count; index++) {
@@ -82,13 +77,17 @@ function integerOption(value, fallback, min, max) {
 }
 
 export function createProjectionService(options = {}, customProfiles = [], characterRecords = null) {
-  const sampleCount = integerOption(options.simulationCount, 10000, 100, 50000)
+  const distributionEngine = createDistributionEngine()
+  const inventory = observedEquipment(characterRecords)
+  const gainPolicy = { keep: Number(options.keepGainThreshold ?? 0.5), drop: Number(options.discardGainThreshold ?? 0.05) }
+  if (!Number.isFinite(gainPolicy.keep) || !Number.isFinite(gainPolicy.drop) || gainPolicy.drop < 0 || gainPolicy.keep <= gainPolicy.drop) throw new Error("期望收益阈值须满足0≤低价值线<保留线")
   const rowCount = integerOption(options.projectionRows, 5, 1, 5)
-  const seed = integerOption(options.simulationSeed, 20261025, 1, 4294967295)
+
   const profiles = getCharacterProfiles(customProfiles).filter(profile =>
     !Array.isArray(options.selectedProfileIds) || options.selectedProfileIds.includes(profile.id))
   let lastKey = null
   let lastResult = null
+
 
   function artifactKey(artifact) {
     // 仅使用参与模型的语义字段，不因 OCR 框、空格、时间或估算角标波动重算。
@@ -100,13 +99,14 @@ export function createProjectionService(options = {}, customProfiles = [], chara
 
   function keyFor(artifact, profileIds = null, assessmentOptions = {}) {
     return artifactKey(artifact) + JSON.stringify({ profiles: Array.isArray(profileIds) ? [...new Set(profileIds)].sort() : null,
-      warnings: artifact.warnings || [], enhancementConsistent: artifact.enhancement?.consistent === true,
+      gainPolicy, distributionVersion: DISTRIBUTION_VERSION, warnings: artifact.warnings || [], enhancementConsistent: artifact.enhancement?.consistent === true,
       respectExistingSets: assessmentOptions.respectExistingSets !== false,
       excludeLowInitialStats: assessmentOptions.excludeLowInitialStats === true, minInitialEffectiveStats: assessmentOptions.minInitialEffectiveStats ?? 2 })
   }
 
   return {
     keyFor,
+    distributionStats: distributionEngine.stats,
     cached: (artifact, profileIds = null, assessmentOptions = {}) => keyFor(artifact, profileIds, assessmentOptions) === lastKey ? lastResult : null,
     async calculate(artifact, hooks = {}, profileIds = null, assessmentOptions = {}) {
       const key = keyFor(artifact, profileIds, assessmentOptions)
@@ -119,9 +119,7 @@ export function createProjectionService(options = {}, customProfiles = [], chara
         return result
       }
       checkCancelled(hooks)
-      const actualSampleCount = input.remainingUpgrades === 0 ? 1 : sampleCount
-      // 同一批终值供全部角色评分；待激活值已固定于 input.values，绝不重抽。
-      const samples = await generateSamples(input, actualSampleCount, seed ^ hash(artifactKey(artifact)), hooks)
+      // 固定四条初值（包括已知待激活值），只卷积未来随机强化。
       const activeProfiles = profiles.filter(profile => !Array.isArray(profileIds) || profileIds.includes(profile.id))
       const rows = []
       const skipped = []
@@ -130,13 +128,16 @@ export function createProjectionService(options = {}, customProfiles = [], chara
         const profile = activeProfiles[index]
         try {
           const scorer = compileCharacterScorer(profile, input)
-          const scores = samples.map(values => scoreRound(scorer.score(values))).sort((a, b) => b - a)
+          const distribution = await distributionEngine.calculate(input, scorer.coefficients, scorer.intercept, hooks)
           rows.push({ id: profile.id, name: profile.name, label: profile.label, ruleTitle: scorer.title,
-            ...(characterRecords ? { assessment: assessCharacterArtifact({ artifact, input, samples, profile, record: characterRecords[profile.name],
+            ...(characterRecords ? { assessment: await assessCharacterArtifact({ artifact, input, profile, record: characterRecords[profile.name],
+              distributionEngine, hooks, gainPolicy, inventory,
               respectExistingSets: assessmentOptions.respectExistingSets !== false,
               excludeLowInitialStats: assessmentOptions.excludeLowInitialStats === true, minInitialEffectiveStats: assessmentOptions.minInitialEffectiveStats ?? 2 }) } : {}),
-            top20: scores[Math.max(0, Math.ceil(scores.length * 0.2) - 1)],
-            top80: scores[Math.max(0, Math.ceil(scores.length * 0.8) - 1)] })
+            distribution: { method: distribution.method, mean: distribution.mean, variance: distribution.variance,
+              minimum: distribution.minimum, maximum: distribution.maximum, errorBound: distribution.errorBound },
+            top20: scoreRound(distributionQuantile(distribution, 0.2)),
+            top80: scoreRound(distributionQuantile(distribution, 0.8)) })
         } catch (error) { skipped.push({ name: profile.name, message: error.message || String(error) }) }
         if (index % 8 === 7) await hooks.yieldControl?.()
       }
@@ -144,14 +145,14 @@ export function createProjectionService(options = {}, customProfiles = [], chara
       checkCancelled(hooks)
       const result = {
         state: rows.length ? "ready" : "blocked", message: rows.length ? "" : activeProfiles.length ? "当前没有可计算的角色规则" : "当前筛选条件没有可评分角色，可勾选培养角色或开启其他匹配来源",
-        modelVersion: MODEL_VERSION, sampleCount: actualSampleCount, seed,
+        modelVersion: DISTRIBUTION_VERSION, sampleCount: 0, distributionMethod: DISTRIBUTION_VERSION, gainPolicy,
         respectExistingSets: assessmentOptions.respectExistingSets !== false,
         excludeLowInitialStats: assessmentOptions.excludeLowInitialStats === true, minInitialEffectiveStats: assessmentOptions.minInitialEffectiveStats ?? 2,
         simulatedProfiles: rows.length, skipped, rows: options.returnAllRows ? rows : rows.slice(0, rowCount),
         selectedOnly: Array.isArray(options.selectedProfileIds),
         remainingUpgrades: input.remainingUpgrades, fixedActivation: input.activation,
         finalMain: { key: input.mainKey, value: input.mainValue },
-        assumptions: "默认角色条件；四条、四档均等概率；通用单件分，不代表真实伤害"
+        assumptions: "固定角色上下文，四条四档等概率离散卷积，分位数最终显示取整"
       }
       lastKey = key
       lastResult = result

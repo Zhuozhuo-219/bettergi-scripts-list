@@ -38,7 +38,7 @@ git push origin custom/fishing-area-priority
 
 ## 部署
 
-从托盘退出 BetterGI 后，在仓库根目录执行：
+在仓库根目录执行，部署后重新启动该JS任务加载新文件：
 
 ```powershell
 node repo/js/ArtifactStrongbox/tools/deploy.mjs --bgi-root 'E:\BetterGI'
@@ -51,3 +51,5 @@ node repo/js/ArtifactStrongbox/tools/deploy.mjs --bgi-root 'E:\BetterGI'
 
 BGI 的官方 CNB 订阅不包含此个人脚本。Fork 的 main 和定制分支也不是 BGI 使用的 release 发布分支。
 当前继续采用官方订阅加个人源码部署，完整说明见仓库根目录的「自定义脚本维护.md」。
+
+0.10.0部署工具允许未提交源码，记录dirty状态和逐文件哈希。源码工作目录为本仓库，运行目录仅用于部署与个人资料。

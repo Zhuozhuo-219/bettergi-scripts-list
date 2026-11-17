@@ -73,6 +73,7 @@ function closeMask() {
         } catch (error) { controlError = String(error.message || error) }
       }
       // 交互模式暂停游戏截图，保留上一件信息，避免全屏WebView影响游戏操作和识别。
+      if (!(maskInteraction.interactive && previousSnapshot)) session.clearItemConfirmation?.()
       const snapshot = maskInteraction.interactive && previousSnapshot ? previousSnapshot : readSnapshot()
       previousSnapshot = snapshot
       const hasDetail = Boolean(snapshot.artifact.slot && snapshot.artifact.mainStat)
@@ -82,19 +83,22 @@ function closeMask() {
         runLogger.event("strongbox.snapshot", { ready, artifact: snapshot.artifact, rawText: snapshot.rawText, markerText: snapshot.markerText })
         lastLoggedSnapshot = snapshotKey
       }
+      session.observeArtifact?.(ready ? snapshot.artifact : null)
       const candidates = ready ? session.candidates(snapshot.artifact) : []
       const profileIds = [...new Set(candidates.flatMap(candidate => candidate.profileIds))]
       const { respectExistingSets, excludeLowInitialStats, minInitialEffectiveStats } = session.controls().flags
       const assessmentOptions = { respectExistingSets: respectExistingSets !== false, excludeLowInitialStats, minInitialEffectiveStats }
       const cachedProjection = ready ? projectionService.cached(snapshot.artifact, profileIds, assessmentOptions) : null
+      const presentedProjection = ready ? presentCandidateProjection(cachedProjection, candidates) || { state: "computing", rows: [] } : null
+      const decision = ready ? evaluateArtifact(snapshot.artifact, database, presentedProjection, session.controls()) : null
       const payload = {
         state: ready ? "ready" : "waiting",
         message: !snapshot.onStrongboxPage
           ? "等待还圣奥迹素材选择界面（未识别到底部按钮）"
           : "请点击一件圣遗物，显示完整详情",
         artifact: ready ? snapshot.artifact : null,
-        decision: ready ? evaluateArtifact(snapshot.artifact, database) : null,
-        projection: ready ? presentCandidateProjection(cachedProjection, candidates) || { state: "computing", rows: [] } : null,
+        decision,
+        projection: presentedProjection,
         controls: { ...session.controls(), interactive: maskInteraction.interactive, error: controlError },
         region: REGIONS.detail,
         showRegion: options.showRegion === true,
@@ -111,6 +115,8 @@ function closeMask() {
           level: snapshot.artifact.level, setName: snapshot.artifact.setName, capacity: session.controls().capacity,
           assessmentOptions,
           summary: presentCandidateProjection(computed, candidates)?.assessmentSummary,
+          decision: evaluateArtifact(snapshot.artifact, database, presentCandidateProjection(computed, candidates), session.controls()),
+          distributionStats: projectionService.distributionStats,
           rows: computed.rows.map(row => ({ name: row.name, id: row.id, assessment: row.assessment })) })
         // 下一轮重新截图确认当前圣遗物后才发送结果，防止计算期间切换造成串件。
       }

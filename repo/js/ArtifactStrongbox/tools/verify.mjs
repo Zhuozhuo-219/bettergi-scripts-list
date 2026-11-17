@@ -137,7 +137,7 @@ if (existsSync(referenceUrl)) {
 globalThis.file = { readTextSync: read }
 const database = loadDecisionDatabase()
 assert.equal(evaluateArtifact(artifact, database).status, 'unknown')
-assert.equal(evaluateArtifact(artifact, { rules: [{}] }).status, 'unknown')
+assert.throws(() => evaluateArtifact(artifact, { schemaVersion: 1, rules: [{}] }), /规则/)
 globalThis.file = { readTextSync: () => '{"schemaVersion":2,"rules":[]}' }
 assert.throws(loadDecisionDatabase, /格式错误/)
 globalThis.file = { readTextSync: read }

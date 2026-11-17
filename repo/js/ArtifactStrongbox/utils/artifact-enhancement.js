@@ -109,6 +109,12 @@ export function getEnhancementProgress(level, subStats) {
   }
 }
 
+export function nextRandomEnhancementLevel(artifact) {
+  const progress = artifact.enhancement
+  if (!progress?.consistent || !progress.remainingUpgradeCount) return null
+  return progress.remainingActivationCount ? 8 : progress.nextNode
+}
+
 export function annotateArtifactEnhancement(artifact) {
   const enhancement = getEnhancementProgress(artifact.level, artifact.subStats)
   const maxCount = enhancement ? enhancement.completedNodes + 1 : 6

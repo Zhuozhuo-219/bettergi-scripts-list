@@ -92,7 +92,7 @@ export function getCharacterProfiles(customProfiles = []) {
 
 export function prepareProjectionInput(artifact) {
   const progress = artifact.enhancement
-  if (!progress?.consistent) throw new Error("等级或四条词条状态需核对，暂不预测")
+  if (!progress?.consistent || progress.level !== artifact.level) throw new Error("等级或四条词条状态需核对，暂不预测")
   const pos = SLOTS.indexOf(artifact.slot)
   const main = artifact.mainStat
   let mainKey = MAIN_KEYS[main?.name]

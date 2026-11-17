@@ -1,5 +1,7 @@
+import { observedLoadoutThreshold } from "./artifact-loadout.js"
+import { distributionMetrics } from "./artifact-distribution.js"
 import { SLOTS } from "./artifact-reader.js"
-import { getSubStatKey, getSubStatRolls, annotateArtifactEnhancement } from "./artifact-enhancement.js"
+import { getSubStatKey, getSubStatRolls, annotateArtifactEnhancement, nextRandomEnhancementLevel } from "./artifact-enhancement.js"
 import { prepareProjectionInput, compileCharacterScorer, getMainStatKey } from "./projection-model.js"
 import { cleanName, hasEquippedOwner } from "./account-reader.js"
 
@@ -8,7 +10,7 @@ export const ASSESSMENT_POLICY = { meaningfulGain: 0.5, keepProbability: 0.8, di
   models: ["rank-linear", "rank-exponential", "legacy-stress"], version: "relative-equipment-2" }
 const KEYS = ["hpPlus", "atkPlus", "defPlus", "hp", "atk", "def", "mastery", "recharge", "cpct", "cdmg"]
 const same = (a, b) => cleanName(a) === cleanName(b)
-const unknown = (code, reason, extra = {}) => ({ status: "unknown", label: "待定", code, reason, ...extra })
+const unknown = (code, reason, extra = {}) => ({ status: "unknown", label: "需核对", code, reason, ...extra })
 
 export function mainStatSuitability(artifact, record) {
   const key = getMainStatKey(artifact.slot, artifact.mainStat)
@@ -44,12 +46,11 @@ export function mainRuleAssessment(artifact, record, fit = mainStatSuitability(a
     mainPolicy: fit, scope: "用户指定的主词条推荐范围排除，不表示提升概率为零" }
 }
 
-// 玩家手动初筛独立于评分分支和现装；只计+0时已激活、且命中该部位推荐的副词条种类。
+// 有效类型数包含预览第四条，另记当前激活数；阈值只提供排序特征。
 export function initialEffectiveStatPolicy(artifact, record, { excludeLowInitialStats = false, minInitialEffectiveStats = 2 } = {}) {
-  if (!excludeLowInitialStats) return null
-  const unresolved = reason => ({ state: "unknown", threshold: minInitialEffectiveStats, reason })
+  const threshold = excludeLowInitialStats ? minInitialEffectiveStats : null
+  const unresolved = reason => ({ state: "unknown", threshold, reason })
   if (!Number.isInteger(minInitialEffectiveStats) || minInitialEffectiveStats < 0 || minInitialEffectiveStats > 4) return unresolved("初始有效词条阈值须为0～4整数")
-  if (artifact.level !== 0) return unresolved("仅对+0素材统计初始有效副词条")
   if (artifact.warnings?.length) return unresolved("素材识别有警告，初始有效词条数需核对")
   if (!record?.identity?.verified || record.identity.conflicts || record.needsRefresh) return unresolved("角色身份或元素资料需要复核")
   try { prepareProjectionInput(artifact) } catch (error) { return unresolved(`素材数值需复核：${error.message}`) }
@@ -63,17 +64,10 @@ export function initialEffectiveStatPolicy(artifact, record, { excludeLowInitial
   const active = artifact.subStats.filter(stat => stat.activation === "active")
   if (![3, 4].includes(active.length) || artifact.subStats.some(stat => !["active", "pending"].includes(stat.activation))) return unresolved("初始词条激活状态需核对")
   const effective = active.filter(stat => keys.includes(getSubStatKey(stat)))
-  return { state: "known", threshold: minInitialEffectiveStats, count: effective.length, activeCount: active.length,
+  return { state: "known", threshold, count: artifact.subStats.filter(stat => keys.includes(getSubStatKey(stat))).length, activatedCount: effective.length, activeCount: active.length,
     names: effective.map(stat => stat.name + (stat.percent ? "%" : "")),
     pendingEffectiveCount: artifact.subStats.filter(stat => stat.activation === "pending" && keys.includes(getSubStatKey(stat))).length,
-    source: "本部位推荐追加词条", reason: "只计已激活副词条，待激活第四条和主词条不计入" }
-}
-
-export function initialEffectiveRuleAssessment(policy) {
-  if (policy?.state !== "known" || policy.count >= policy.threshold) return null
-  return { status: "fodder", label: "舍弃", code: "initial-effective-below-threshold",
-    reason: `初始有效副词条 ${policy.count} < 阈值 ${policy.threshold}（玩家规则，待激活不计）`,
-    initialStats: policy, scope: "玩家手动初筛，仅本角色当前用途；不表示强化提升概率为零" }
+    source: "本部位推荐追加词条", reason: "潜在有效数包含已知待激活第四条" }
 }
 
 export function inventoryPressure(value) {
@@ -96,11 +90,29 @@ function currentArtifact(record, slot) {
     same(artifact.owner, record.identity?.displayName) ? artifact : null
 }
 
-export function replacementContext(artifact, record, { allowMainChange = false, respectExistingSets = true } = {}) {
+export function observedEquipment(records) {
+  const result = []
+  for (const record of Object.values(records || {})) {
+    if (!record.identity?.verified || record.identity.conflicts || record.needsRefresh) continue
+    for (const slot of SLOTS) {
+      const artifact = currentArtifact(record, slot)
+      if (!artifact || artifact.level !== 20) continue
+      try {
+        const prepared = annotateArtifactEnhancement({ ...artifact, warnings: [],
+          subStats: artifact.subStats.map((stat, rowIndex) => ({ ...stat, rowIndex, activation: "active" })) })
+        result.push({ slot, setName: artifact.setName, owner: record.identity.displayName, name: artifact.name,
+          input: prepareProjectionInput(prepared) })
+      } catch { /* 仅可靠满级观察可参与配套证明。 */ }
+    }
+  }
+  return result
+}
+
+export function replacementContext(artifact, record, { allowMainChange = false, respectExistingSets = true, allowCompanionAnalysis = false } = {}) {
   if (!record?.identity?.verified || record.identity.conflicts || record.needsRefresh) return unknown("identity", "角色身份或元素资料需要复核")
   const equipment = SLOTS.map(slot => currentArtifact(record, slot))
   const setsKnown = equipment.every(Boolean)
-  if (respectExistingSets && !setsKnown) return unknown("equipment", "五部位现装归属或详情不完整，不能确认替换约束")
+  if (respectExistingSets && !setsKnown && !allowCompanionAnalysis) return unknown("equipment", "五部位现装归属或详情不完整，不能确认替换约束")
   const baseline = equipment[SLOTS.indexOf(artifact.slot)]
   if (!baseline) return unknown("equipment", "同部位现装归属或详情不完整，不能建立基线")
   if (!baseline || !artifact.setName) return unknown("slot", "素材部位或套装尚未确认")
@@ -111,7 +123,7 @@ export function replacementContext(artifact, record, { allowMainChange = false, 
   after[baseline.setName]--
   after[artifact.setName] = (after[artifact.setName] || 0) + 1
   const broken = required.filter(set => (after[set.name] || 0) < set.count)
-  if (respectExistingSets && broken.length) return unknown("set-break", `替换会拆散${broken.map(set => `${set.name}${set.count}件套`).join("、")}；仅作配套备选`, { requiredSets: required, beforeCounts: counts, afterCounts: after })
+  if (respectExistingSets && broken.length && !allowCompanionAnalysis) return unknown("set-break", `替换会拆散${broken.map(set => `${set.name}${set.count}件套`).join("、")}；仅作配套备选`, { requiredSets: required, beforeCounts: counts, afterCounts: after })
   const mainChanged = !artifact.mainStat || !baseline.mainStat || !same(artifact.mainStat.name, baseline.mainStat.name) ||
     Boolean(artifact.mainStat.percent) !== Boolean(baseline.mainStat.percent)
   if (mainChanged && !allowMainChange) {
@@ -124,6 +136,7 @@ export function replacementContext(artifact, record, { allowMainChange = false, 
     return { baseline: prepareProjectionInput(prepared), baselineName: baseline.name, mainChanged,
       baselineObservedAt: record.slots[artifact.slot].observedAt || record.capturedAt || null,
       requiredSets: required, brokenSets: broken, respectExistingSets, setCountsKnown: setsKnown,
+      requiresCompanion: respectExistingSets && (!setsKnown || broken.length > 0),
       beforeCounts: setsKnown ? counts : null, afterCounts: setsKnown ? after : null }
   } catch (error) { return unknown("baseline-invalid", `现装数值需复核：${error.message}`) }
 }
@@ -162,6 +175,7 @@ function legacyModel(profile, input) {
 }
 
 const score = (weights, keys, values) => keys.reduce((sum, key, i) => sum + (weights[key] || 0) * values[i] / getSubStatRolls(key)[3], 0)
+// 旧版抽样统计接口保留供离线对照，新决策入口使用下方的PMF期望收益。
 export function probabilityInterval(successes, total) {
   const z2 = 1.96 ** 2, p = successes / total, denominator = 1 + z2 / total
   const centre = p + z2 / (2 * total), radius = Math.sqrt(z2 * p * (1 - p) / total + z2 * z2 / (4 * total * total))
@@ -204,38 +218,79 @@ export function classifyImprovement(models, { mainChanged = false } = {}) {
   return unknown("overlap", "分布仍有重叠或模型结论不一致，保留待复核", { bounds })
 }
 
-export function assessCharacterArtifact({ artifact, input, samples, profile, record, respectExistingSets = true,
-  excludeLowInitialStats = false, minInitialEffectiveStats = 2 }) {
-  if (artifact.level !== 0) return unknown("leveled", "非0级素材需人工确认，不自动按胚子判舍弃")
+export function classifyExpectedGain(models, policy = { keep: 0.5, drop: 0.05 }) {
+  if (!models.length || models.some(model => !Number.isFinite(model.gainBounds?.lower) || !Number.isFinite(model.gainBounds?.upper))) {
+    return unknown("models", "期望收益分布不完整")
+  }
+  const lower = Math.min(...models.map(model => model.gainBounds.lower))
+  const upper = Math.max(...models.map(model => model.gainBounds.upper))
+  const modelRange = { lower, upper, keepThreshold: policy.keep, dropThreshold: policy.drop }
+  if (lower >= policy.keep) return { status: "keep", label: "保留", code: "expected-gain-keep",
+    reason: `各情景期望正提升至少${lower.toFixed(2)}，达到保留线${policy.keep}`, modelRange }
+  if (upper <= policy.drop) return { status: "fodder", label: "低价值", code: "expected-gain-low",
+    reason: `各情景期望正提升至多${upper.toFixed(2)}，低于低价值线${policy.drop}`, modelRange }
+  return { status: "test", label: "建议试强化", code: "expected-gain-test",
+    reason: `期望正提升范围${lower.toFixed(2)}～${upper.toFixed(2)}，可在下一随机节点复查`, modelRange }
+}
+
+export async function assessCharacterArtifact({ artifact, input, profile, record, distributionEngine, hooks = {},
+  gainPolicy, inventory = [], respectExistingSets = true, excludeLowInitialStats = false, minInitialEffectiveStats = 2 }) {
   if (artifact.warnings?.length) return unknown("artifact-ocr", "素材识别仍有警告，需核对后再判定")
   if (!record?.identity?.verified || record.identity.conflicts || record.needsRefresh) return unknown("identity", "角色身份或元素资料需要复核")
-  const initialRule = initialEffectiveRuleAssessment(initialEffectiveStatPolicy(artifact, record, { excludeLowInitialStats, minInitialEffectiveStats }))
-  if (initialRule) return initialRule
+  const initialStats = initialEffectiveStatPolicy(artifact, record, { excludeLowInitialStats, minInitialEffectiveStats })
   const mainPolicy = mainStatSuitability(artifact, record)
   const rejected = mainRuleAssessment(artifact, record, mainPolicy)
-  if (rejected) return rejected
-  if (mainPolicy.state === "unknown") return unknown("main-recommendation", mainPolicy.reason, { mainPolicy })
-  const context = replacementContext(artifact, record, { allowMainChange: true, respectExistingSets })
-  if (context.status) return context
+  if (rejected) return { ...rejected, eligibility: "outside", initialStats }
+  if (mainPolicy.state === "unknown") return unknown("main-recommendation", mainPolicy.reason, { mainPolicy, initialStats })
+  const context = replacementContext(artifact, record, { allowMainChange: true, respectExistingSets, allowCompanionAnalysis: true })
+  if (context.status) return { ...context, dataConfidence: "incomplete", initialStats }
   let models
   try { models = [...recommendationWeights(record.recommendations?.[artifact.slot]), legacyModel(profile, input)] }
   catch (error) { return unknown("weights", error.message) }
   if (context.mainChanged && models.some(model => !KEYS.includes(input.mainKey) || !KEYS.includes(context.baseline.mainKey) ||
     !(model.weights[input.mainKey] > 0) || !(model.weights[context.baseline.mainKey] > 0))) {
-    return unknown("main-unpriced", "两个主词条均在推荐范围，但主属性类型或其权重尚不能统一计价", { mainPolicy, mainChanged: true })
+    return unknown("main-unpriced", "推荐主属性需在同一上下文统一计价", { mainPolicy, mainChanged: true })
   }
-  if (!samples.length) return unknown("samples", "尚无强化样本")
-  const summaries = models.map(model => {
+  const summaries = []
+  let companionProven = context.setCountsKnown && respectExistingSets
+  let loadoutEvidence = null
+  const ownItems = observedEquipment({ current: record })
+  for (const model of models) {
     const mainContribution = (key, value) => context.mainChanged ? model.weights[key] * value / getSubStatRolls(key)[3] : 0
     const baseline = score(model.weights, context.baseline.keys, context.baseline.values) + mainContribution(context.baseline.mainKey, context.baseline.mainValue)
-    const deltas = samples.map(values => score(model.weights, input.keys, values) + mainContribution(input.mainKey, input.mainValue) - baseline)
-    return summarizeImprovement(deltas, model, baseline)
-  })
-  return { ...classifyImprovement(summaries, { mainChanged: context.mainChanged }), models: summaries, sampleCount: samples.length,
+    const coefficients = input.keys.map(key => (model.weights[key] || 0) / getSubStatRolls(key)[3])
+    const distribution = await distributionEngine.calculate(input, coefficients, mainContribution(input.mainKey, input.mainValue), hooks)
+    let threshold = baseline
+    if (context.setCountsKnown && ownItems.length === 5 && respectExistingSets) {
+      const loadout = observedLoadoutThreshold(artifact, ownItems, inventory.length ? inventory : ownItems, context.requiredSets,
+        item => score(model.weights, item.input.keys, item.input.values) +
+          (item.slot === artifact.slot ? mainContribution(item.input.mainKey, item.input.mainValue) : 0))
+      if (loadout) {
+        threshold = loadout.threshold
+        loadoutEvidence = { scope: loadout.scope, companions: loadout.items.filter(item => item.slot !== artifact.slot)
+          .map(item => ({ slot: item.slot, name: item.name, owner: item.owner, setName: item.setName })) }
+      }
+      else companionProven = false
+    } else companionProven = false
+    const metrics = distributionMetrics(distribution, threshold)
+    summaries.push({ ...metrics, id: model.id, label: model.label, baselineScore: baseline, weights: model.weights,
+      pImprove: metrics.pGreater, effectiveCount: coefficients.filter(value => value > 0).length })
+  }
+  let decision = classifyExpectedGain(summaries, gainPolicy)
+  const requiresCompanion = context.requiresCompanion && !companionProven
+  if (requiresCompanion) {
+    decision = decision.status === "keep" ? { ...decision, label: "有条件保留", reason: decision.reason + "，可能需要配套圣遗物" }
+      : unknown("companion-evidence", "缺配套替代品证据，属性分布已计算", { modelRange: decision.modelRange })
+  }
+  if (companionProven && loadoutEvidence?.companions.some(item => item.owner !== record.identity.displayName)) {
+    decision = { ...decision, reason: decision.reason + "，涉及已录入其他角色装备的调配" }
+  }
+  const nextTestLevel = nextRandomEnhancementLevel(artifact)
+  if (decision.status === "test" && nextTestLevel === null) decision = { ...decision, status: "keep", label: "保留复核", reason: "已满级，保留并按实际配装收益复核" }
+  return { ...decision, models: summaries, initialStats, nextTestLevel, dataConfidence: "verified",
+    eligibility: requiresCompanion ? "unknown" : "eligible", requiresCompanion, loadoutEvidence,
     mainPolicy, mainChanged: context.mainChanged, comparison: context.mainChanged ? "main-and-subs" : "same-main-subs",
     baselineName: context.baselineName, baselineObservedAt: context.baselineObservedAt,
     requiredSets: context.requiredSets, brokenSets: context.brokenSets, respectExistingSets, setCountsKnown: context.setCountsKnown,
-    policy: ASSESSMENT_POLICY.version,
-    scope: respectExistingSets ? "推荐主词条范围、保留已录入现装套装的单部位替换；情景评分不等于真实伤害" :
-      "忽略现有套装组合的属性评分对比；不计入拆套装损失，不代表实际换装收益" }
+    policy: "conditional-decision-1", scope: "已装备快照支持的局部比较" }
 }
